@@ -1,0 +1,93 @@
+{% extends "base.html" %}
+
+{% block title %}Mon portefeuille - TSI{% endblock %}
+
+{% block content %}
+<div class="container py-5 mt-5">
+    <div class="row">
+        <div class="col-lg-3">
+            <div class="list-group mb-4">
+                <a href="{{ url_for('member.dashboard') }}" class="list-group-item list-group-item-action">
+                    <i class="bi bi-speedometer2 me-2"></i>Tableau de bord
+                </a>
+                <a href="{{ url_for('member.portfolio') }}" class="list-group-item list-group-item-action active">
+                    <i class="bi bi-wallet2 me-2"></i>Mon portefeuille
+                </a>
+                <a href="{{ url_for('member.transactions') }}" class="list-group-item list-group-item-action">
+                    <i class="bi bi-receipt me-2"></i>Mes transactions
+                </a>
+                <a href="{{ url_for('arf.index') }}" class="list-group-item list-group-item-action">
+                    <i class="bi bi-coin me-2"></i>Investir en ARF
+                </a>
+                <a href="{{ url_for('marketplace.index') }}" class="list-group-item list-group-item-action">
+                    <i class="bi bi-shop me-2"></i>Marketplace
+                </a>
+                <a href="{{ url_for('payment.history') }}" class="list-group-item list-group-item-action">
+                    <i class="bi bi-credit-card me-2"></i>Paiements
+                </a>
+            </div>
+            <h6 class="text-muted text-uppercase fw-bold mb-2 px-2" style="font-size: 0.7rem; letter-spacing: 1px;">
+                <i class="bi bi-people-fill me-1"></i>RESEAU
+            </h6>
+            <div class="list-group mb-4">
+                <a href="{{ url_for('reseau.index') }}" class="list-group-item list-group-item-action">
+                    <i class="bi bi-people me-2"></i>Espace Reseau
+                </a>
+                <a href="{{ url_for('reseau.meetings_list') }}" class="list-group-item list-group-item-action">
+                    <i class="bi bi-camera-video me-2"></i>Reunions en ligne
+                </a>
+                <a href="{{ url_for('reseau.articles_my') }}" class="list-group-item list-group-item-action">
+                    <i class="bi bi-journal-text me-2"></i>Mes articles
+                </a>
+            </div>
+        </div>
+
+        <div class="col-lg-9">
+            <h1 class="fw-bold mb-4">Mon portefeuille</h1>
+
+            {% if subscriptions %}
+                {% for sub in subscriptions %}
+                <div class="card shadow-sm mb-3">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-start">
+                            <div>
+                                <h5 class="fw-bold mb-1">{{ sub.arf.name }}</h5>
+                                <p class="text-muted small mb-2">{{ sub.arf.sector }} - {{ sub.arf.country }}</p>
+                                <span class="badge bg-{{ sub.status_color }}">{{ sub.status_label }}</span>
+                            </div>
+                            <div class="text-end">
+                                <p class="fw-bold text-primary mb-0" style="font-size: 1.3rem;">{{ sub.units }} tikecs</p>
+                                <p class="text-muted mb-0">{{ "{:,.2f}".format(sub.amount) }} €</p>
+                            </div>
+                        </div>
+                        <hr>
+                        <div class="row text-muted small">
+                            <div class="col-md-4">
+                                <i class="bi bi-phone me-1"></i>{{ sub.payment_method_label }} - {{ sub.phone_number }}
+                            </div>
+                            <div class="col-md-4">
+                                <i class="bi bi-calendar me-1"></i>{{ sub.created_at.strftime('%d/%m/%Y à %H:%M') }}
+                            </div>
+                            <div class="col-md-4">
+                                <i class="bi bi-graph-up me-1"></i>Rendement: {{ sub.arf.expected_return }}%
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            {% else %}
+            <div class="card shadow-sm">
+                <div class="card-body text-center py-5">
+                    <i class="bi bi-wallet2 text-muted" style="font-size: 4rem;"></i>
+                    <h4 class="mt-3">Portefeuille vide</h4>
+                    <p class="text-muted">Vous n'avez pas encore investi en ARF.</p>
+                    <a href="{{ url_for('arf.index') }}" class="btn btn-primary">
+                        <i class="bi bi-coin me-2"></i>Découvrir les ARF
+                    </a>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

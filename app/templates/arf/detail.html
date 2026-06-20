@@ -1,0 +1,165 @@
+{% extends "base.html" %}
+
+{% block title %}{{ arf.name }} - TSI{% endblock %}
+
+{% block content %}
+<div class="container py-5 mt-5">
+    <div class="mb-4">
+        <a href="{{ url_for('arf.index') }}" class="text-decoration-none text-muted">
+            <i class="bi bi-arrow-left me-1"></i>Retour au portefeuille
+        </a>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-8">
+            <div class="card shadow-sm mb-4">
+                <div class="card-header bg-white d-flex justify-content-between align-items-center">
+                    <span class="badge bg-{{ arf.risk_color }} fs-6">Risque {{ arf.risk_label }}</span>
+                    <span class="badge bg-primary">{{ arf.sector }}</span>
+                </div>
+                <div class="card-body">
+                    <h1 class="fw-bold mb-3">{{ arf.name }}</h1>
+                    <p class="text-muted mb-4">{{ arf.description }}</p>
+
+                    <div class="row g-4 mb-4">
+                        <div class="col-md-3 text-center">
+                            <div class="bg-light rounded p-3">
+                                <p class="text-muted small mb-1">Valeur totale</p>
+                                <p class="fw-bold text-primary mb-0" style="font-size: 1.3rem;">{{ "{:,.0f}".format(arf.total_value) }} €</p>
+                            </div>
+                        </div>
+                        <div class="col-md-3 text-center">
+                            <div class="bg-light rounded p-3">
+                                <p class="text-muted small mb-1">Prix par tikec</p>
+                                <p class="fw-bold text-gold mb-0" style="font-size: 1.3rem;">{{ "{:,.2f}".format(arf.unit_price) }} €</p>
+                            </div>
+                        </div>
+                        <div class="col-md-3 text-center">
+                            <div class="bg-light rounded p-3">
+                                <p class="text-muted small mb-1">Rendement attendu</p>
+                                <p class="fw-bold text-success mb-0" style="font-size: 1.3rem;">{{ arf.expected_return }}%</p>
+                            </div>
+                        </div>
+                        <div class="col-md-3 text-center">
+                            <div class="bg-light rounded p-3">
+                                <p class="text-muted small mb-1">Pays</p>
+                                <p class="fw-bold mb-0" style="font-size: 1.3rem;">{{ arf.country }}</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mb-4">
+                        <div class="d-flex justify-content-between mb-2">
+                            <span class="fw-semibold">Progression des souscriptions</span>
+                            <span class="text-muted">{{ arf.units_sold }} / {{ arf.total_units }} tikecs</span>
+                        </div>
+                        <div class="progress" style="height: 12px;">
+                            <div class="progress-bar bg-primary" style="width: {{ arf.sold_percentage }}%"></div>
+                        </div>
+                        <p class="text-muted small mt-1">{{ arf.units_available }} tikecs disponibles</p>
+                    </div>
+
+                    <div class="row text-muted">
+                        <div class="col-md-6">
+                            <p><i class="bi bi-calendar me-2"></i>Créé le {{ arf.created_at.strftime('%d/%m/%Y') }}</p>
+                        </div>
+                        <div class="col-md-6">
+                            <p><i class="bi bi-tag me-2"></i>{{ arf.total_units }} unités au total</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-4">
+            <div class="card shadow-sm mb-4">
+                <div class="card-header bg-white">
+                    <h5 class="mb-0 fw-bold">Souscrire</h5>
+                </div>
+                <div class="card-body">
+                    {% if current_user.is_authenticated %}
+                        {% if arf.status == 'active' and arf.units_available > 0 %}
+                        <form method="POST" action="{{ url_for('arf.subscribe', arf_id=arf.id) }}">
+                            {{ form.hidden_tag() }}
+
+                            <div class="mb-3">
+                                <label class="form-label fw-semibold">Nombre de tikecs</label>
+                                <input type="number" name="units" class="form-control" min="1" max="{{ arf.units_available }}" value="1" required
+                                       id="units-input" oninput="updateTotal()">
+                                <small class="text-muted">Disponible : {{ arf.units_available }} tikecs</small>
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label fw-semibold">Méthode de paiement</label>
+                                <select name="payment_method" class="form-select" required>
+                                    <option value="orange_money">Orange Money</option>
+                                    <option value="mtn_momo">MTN MoMo</option>
+                                </select>
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label fw-semibold">Numéro de téléphone</label>
+                                <input type="tel" name="phone_number" class="form-control" placeholder="+225 XX XX XX XX" required>
+                            </div>
+
+                            <div class="bg-light rounded p-3 mb-3 text-center">
+                                <p class="text-muted small mb-1">Montant total</p>
+                                <p class="fw-bold text-primary mb-0" style="font-size: 1.5rem;" id="total-display">
+                                    {{ "{:,.2f}".format(arf.unit_price) }} €
+                                </p>
+                            </div>
+
+                            <button type="submit" class="btn btn-gold btn-lg w-100">
+                                <i class="bi bi-coin me-2"></i>Souscrire maintenant
+                            </button>
+                        </form>
+                        {% else %}
+                        <div class="text-center py-3">
+                            <i class="bi bi-x-circle text-danger" style="font-size: 3rem;"></i>
+                            <p class="mt-3 fw-semibold">Non disponible</p>
+                            <p class="text-muted">Cet ARF est fermé ou complet.</p>
+                        </div>
+                        {% endif %}
+                    {% else %}
+                    <div class="text-center py-3">
+                        <i class="bi bi-box-arrow-in-right text-primary" style="font-size: 3rem;"></i>
+                        <p class="mt-3 fw-semibold">Connectez-vous pour investir</p>
+                        <a href="{{ url_for('auth.login') }}" class="btn btn-primary w-100 mb-2">
+                            <i class="bi bi-box-arrow-in-right me-1"></i>Se connecter
+                        </a>
+                        <a href="{{ url_for('auth.register') }}" class="btn btn-outline-primary w-100">
+                            Créer un compte
+                        </a>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="card shadow-sm">
+                <div class="card-header bg-white">
+                    <h5 class="mb-0 fw-bold">Informations</h5>
+                </div>
+                <div class="card-body">
+                    <ul class="list-unstyled mb-0">
+                        <li class="mb-2"><i class="bi bi-shield-check text-success me-2"></i>Actif garanti par contrat</li>
+                        <li class="mb-2"><i class="bi bi-phone text-primary me-2"></i>Paiement mobile sécurisé</li>
+                        <li class="mb-2"><i class="bi bi-graph-up text-gold me-2"></i>Rendement: {{ arf.expected_return }}%</li>
+                        <li><i class="bi bi-people text-info me-2"></i>Investissement inclusif dès 1 tikec</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% block scripts %}
+<script>
+function updateTotal() {
+    const units = parseInt(document.getElementById('units-input').value) || 0;
+    const unitPrice = {{ arf.unit_price }};
+    const total = (units * unitPrice).toFixed(2);
+    document.getElementById('total-display').textContent = total.replace(/\B(?=(\d{3})+(?!\d))/g, ',') + ' €';
+}
+</script>
+{% endblock %}
+{% endblock %}

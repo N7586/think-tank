@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+
+{% block title %}Mes offres - Marketplace TSI{% endblock %}
+
+{% block content %}
+<div class="container py-5 mt-5">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="fw-bold">Mes offres</h1>
+        <a href="{{ url_for('marketplace.create') }}" class="btn btn-primary">
+            <i class="bi bi-plus-lg me-1"></i>Nouvelle offre
+        </a>
+    </div>
+
+    {% if offers %}
+    <div class="row g-4">
+        {% for offer in offers %}
+        <div class="col-md-6">
+            <div class="card shadow-sm h-100">
+                <div class="card-header bg-white d-flex justify-content-between">
+                    <span class="badge bg-{{ offer.status_color }}">{{ offer.status_label }}</span>
+                    <span class="text-muted small">{{ offer.created_at.strftime('%d/%m/%Y') }}</span>
+                </div>
+                <div class="card-body">
+                    <h5 class="fw-bold">{{ offer.title }}</h5>
+                    <p class="text-muted small">{{ offer.description[:80] }}...</p>
+                    <p class="fw-bold text-primary mb-0">{{ "{:,.0f}".format(offer.value) }} €</p>
+                </div>
+                <div class="card-footer bg-white">
+                    <a href="{{ url_for('marketplace.detail', offer_id=offer.id) }}" class="btn btn-outline-primary btn-sm">
+                        <i class="bi bi-eye me-1"></i>Voir
+                    </a>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="card shadow-sm">
+        <div class="card-body text-center py-5">
+            <i class="bi bi-shop text-muted" style="font-size: 4rem;"></i>
+            <h4 class="mt-3">Aucune offre publiée</h4>
+            <p class="text-muted">Commencez par publier votre première offre.</p>
+            <a href="{{ url_for('marketplace.create') }}" class="btn btn-primary">
+                <i class="bi bi-plus-lg me-1"></i>Publier une offre
+            </a>
+        </div>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

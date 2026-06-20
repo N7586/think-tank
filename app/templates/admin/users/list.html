@@ -1,0 +1,144 @@
+{% extends "base.html" %}
+
+{% block title %}Gestion des utilisateurs - Admin TSI{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-5 mt-4">
+    <div class="row">
+        <div class="col-lg-2 bg-dark min-vh-100 position-fixed d-none d-lg-block" style="padding-top: 80px;">
+            <nav class="nav flex-column p-3">
+                <a class="nav-link text-light" href="{{ url_for('admin.dashboard') }}">
+                    <i class="bi bi-speedometer2 me-2"></i>Dashboard
+                </a>
+                <a class="nav-link text-light active" href="{{ url_for('admin.users_list') }}">
+                    <i class="bi bi-people me-2"></i>Utilisateurs
+                </a>
+                <a class="nav-link text-light" href="{{ url_for('blog.index') }}">
+                    <i class="bi bi-journal-text me-2"></i>Blog
+                </a>
+                <a class="nav-link text-light" href="{{ url_for('arf.index') }}">
+                    <i class="bi bi-coin me-2"></i>ARF
+                </a>
+                <a class="nav-link text-light" href="{{ url_for('marketplace.index') }}">
+                    <i class="bi bi-shop me-2"></i>Marketplace
+                </a>
+                <hr class="border-secondary">
+                <a class="nav-link text-light" href="{{ url_for('main.home') }}">
+                    <i class="bi bi-house me-2"></i>Retour au site
+                </a>
+            </nav>
+        </div>
+
+        <div class="col-lg-10 offset-lg-2">
+            <div class="p-4">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h1 class="fw-bold">Utilisateurs</h1>
+                    <span class="badge bg-primary fs-6">{{ users.total }} inscrits</span>
+                </div>
+
+                <div class="card shadow-sm mb-4">
+                    <div class="card-body">
+                        <form method="GET" class="row g-3">
+                            <div class="col-md-6">
+                                <input type="text" name="search" class="form-control" placeholder="Rechercher par nom, email, téléphone..." value="{{ search }}">
+                            </div>
+                            <div class="col-md-4">
+                                <select name="status" class="form-select">
+                                    <option value="">Tous les statuts</option>
+                                    <option value="active" {% if status_filter == 'active' %}selected{% endif %}>Actifs</option>
+                                    <option value="blocked" {% if status_filter == 'blocked' %}selected{% endif %}>Bloqués</option>
+                                </select>
+                            </div>
+                            <div class="col-md-2">
+                                <button type="submit" class="btn btn-primary w-100">
+                                    <i class="bi bi-search me-1"></i>Filtrer
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <div class="card shadow-sm">
+                    <div class="card-body p-0">
+                        <div class="table-responsive">
+                            <table class="table table-hover mb-0">
+                                <thead>
+                                    <tr>
+                                        <th>#</th>
+                                        <th>Nom complet</th>
+                                        <th>Email</th>
+                                        <th>Téléphone</th>
+                                        <th>Langue</th>
+                                        <th>Inscription</th>
+                                        <th>Dernière connexion</th>
+                                        <th>Statut</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for user in users.items %}
+                                    <tr>
+                                        <td>{{ user.id }}</td>
+                                        <td class="fw-semibold">{{ user.full_name }}</td>
+                                        <td>{{ user.email }}</td>
+                                        <td>{{ user.phone or '-' }}</td>
+                                        <td>{{ user.language|upper }}</td>
+                                        <td>{{ user.created_at.strftime('%d/%m/%Y %H:%M') }}</td>
+                                        <td>{{ user.last_login.strftime('%d/%m/%Y %H:%M') if user.last_login else '-' }}</td>
+                                        <td>
+                                            {% if user.is_active %}
+                                                <span class="badge badge-active">Actif</span>
+                                            {% else %}
+                                                <span class="badge badge-blocked">Bloqué</span>
+                                            {% endif %}
+                                        </td>
+                                        <td>
+                                            <a href="{{ url_for('admin.user_detail', user_id=user.id) }}" class="btn btn-outline-primary btn-sm" title="Voir">
+                                                <i class="bi bi-eye"></i>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                    {% if not users.items %}
+                                    <tr>
+                                        <td colspan="9" class="text-center text-muted py-4">
+                                            Aucun utilisateur trouvé.
+                                        </td>
+                                    </tr>
+                                    {% endif %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                {% if users.pages > 1 %}
+                <nav class="mt-4">
+                    <ul class="pagination justify-content-center">
+                        {% if users.has_prev %}
+                            <li class="page-item">
+                                <a class="page-link" href="?page={{ users.prev_num }}&search={{ search }}&status={{ status_filter }}">Précédent</a>
+                            </li>
+                        {% endif %}
+                        {% for page_num in users.iter_pages() %}
+                            {% if page_num %}
+                                <li class="page-item {% if page_num == users.page %}active{% endif %}">
+                                    <a class="page-link" href="?page={{ page_num }}&search={{ search }}&status={{ status_filter }}">{{ page_num }}</a>
+                                </li>
+                            {% else %}
+                                <li class="page-item disabled"><span class="page-link">...</span></li>
+                            {% endif %}
+                        {% endfor %}
+                        {% if users.has_next %}
+                            <li class="page-item">
+                                <a class="page-link" href="?page={{ users.next_num }}&search={{ search }}&status={{ status_filter }}">Suivant</a>
+                            </li>
+                        {% endif %}
+                    </ul>
+                </nav>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

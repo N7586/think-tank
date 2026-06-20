@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+
+{% block title %}Verification Admin - TSI{% endblock %}
+
+{% block content %}
+<section class="py-5" style="margin-top: 80px;">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-5">
+                <div class="card shadow-sm border-0">
+                    <div class="card-body p-5 text-center">
+                        <div class="mb-4">
+                            <i class="bi bi-shield-lock-fill text-warning" style="font-size: 4rem;"></i>
+                        </div>
+                        <h3 class="fw-bold mb-2">Verification de securite</h3>
+                        <p class="text-muted mb-4">
+                            En tant qu'administrateur, vous devez entrer le <strong>code de securite</strong> pour acceder au panneau d'administration.
+                        </p>
+
+                        <form method="POST">
+                            <input type="hidden" name="csrf_token" value="{{ csrf_token() if csrf_token is defined else '' }}">
+                            <div class="mb-4">
+                                <label class="form-label fw-bold">Code de securite</label>
+                                <input type="password" name="code" class="form-control form-control-lg text-center"
+                                       placeholder="Entrez le code" autofocus required
+                                       style="font-size: 1.5rem; letter-spacing: 8px;">
+                            </div>
+                            <button type="submit" class="btn btn-warning btn-lg w-100 fw-bold">
+                                <i class="bi bi-unlock me-2"></i>Verifier le code
+                            </button>
+                        </form>
+
+                        <hr class="my-4">
+                        <a href="{{ url_for('auth.logout') }}" class="text-muted text-decoration-none">
+                            <i class="bi bi-arrow-left me-1"></i>Se deconnecter
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

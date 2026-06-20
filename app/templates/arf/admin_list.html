@@ -1,0 +1,132 @@
+{% extends "base.html" %}
+
+{% block title %}Gestion ARF - Admin TSI{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-5 mt-4">
+    <div class="row">
+        <div class="col-lg-2 bg-dark min-vh-100 position-fixed d-none d-lg-block" style="padding-top: 80px;">
+            <nav class="nav flex-column p-3">
+                <a class="nav-link text-light" href="{{ url_for('admin.dashboard') }}">
+                    <i class="bi bi-speedometer2 me-2"></i>Dashboard
+                </a>
+                <a class="nav-link text-light" href="{{ url_for('admin.users_list') }}">
+                    <i class="bi bi-people me-2"></i>Utilisateurs
+                </a>
+                <a class="nav-link text-light active" href="{{ url_for('arf.admin_list') }}">
+                    <i class="bi bi-coin me-2"></i>ARF
+                </a>
+                <a class="nav-link text-light" href="{{ url_for('marketplace.index') }}">
+                    <i class="bi bi-shop me-2"></i>Marketplace
+                </a>
+                <hr class="border-secondary">
+                <a class="nav-link text-light" href="{{ url_for('main.home') }}">
+                    <i class="bi bi-house me-2"></i>Retour au site
+                </a>
+            </nav>
+        </div>
+
+        <div class="col-lg-10 offset-lg-2">
+            <div class="p-4">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h1 class="fw-bold">Gestion des ARF</h1>
+                    <a href="{{ url_for('arf.admin_create') }}" class="btn btn-primary">
+                        <i class="bi bi-plus-lg me-1"></i>Créer un ARF
+                    </a>
+                </div>
+
+                <div class="card shadow-sm">
+                    <div class="card-body p-0">
+                        <div class="table-responsive">
+                            <table class="table table-hover mb-0">
+                                <thead>
+                                    <tr>
+                                        <th>#</th>
+                                        <th>Nom</th>
+                                        <th>Secteur</th>
+                                        <th>Pays</th>
+                                        <th>Valeur</th>
+                                        <th>Prix/tikec</th>
+                                        <th>Vendus</th>
+                                        <th>Rendement</th>
+                                        <th>Statut</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for arf in arfs.items %}
+                                    <tr>
+                                        <td>{{ arf.id }}</td>
+                                        <td class="fw-semibold">{{ arf.name }}</td>
+                                        <td>{{ arf.sector }}</td>
+                                        <td>{{ arf.country }}</td>
+                                        <td>{{ "{:,.0f}".format(arf.total_value) }} €</td>
+                                        <td>{{ "{:,.2f}".format(arf.unit_price) }} €</td>
+                                        <td>{{ arf.units_sold }}/{{ arf.total_units }}</td>
+                                        <td class="text-success">{{ arf.expected_return }}%</td>
+                                        <td>
+                                            {% if arf.status == 'active' %}
+                                                <span class="badge bg-success">Active</span>
+                                            {% else %}
+                                                <span class="badge bg-secondary">Fermée</span>
+                                            {% endif %}
+                                        </td>
+                                        <td>
+                                            <a href="{{ url_for('arf.detail', arf_id=arf.id) }}" class="btn btn-outline-primary btn-sm" title="Voir">
+                                                <i class="bi bi-eye"></i>
+                                            </a>
+                                            <a href="{{ url_for('arf.admin_edit', arf_id=arf.id) }}" class="btn btn-outline-warning btn-sm" title="Modifier">
+                                                <i class="bi bi-pencil"></i>
+                                            </a>
+                                            <form method="POST" action="{{ url_for('arf.admin_toggle_status', arf_id=arf.id) }}" class="d-inline">
+                                                <button type="submit" class="btn btn-outline-{{ 'secondary' if arf.status == 'active' else 'success' }} btn-sm" title="{{ 'Fermer' if arf.status == 'active' else 'Réouvrir' }}">
+                                                    <i class="bi bi-{{ 'pause' if arf.status == 'active' else 'play' }}"></i>
+                                                </button>
+                                            </form>
+                                            <form method="POST" action="{{ url_for('arf.admin_delete', arf_id=arf.id) }}" class="d-inline" onsubmit="return confirm('Supprimer cet ARF ?')">
+                                                <button type="submit" class="btn btn-outline-danger btn-sm" title="Supprimer">
+                                                    <i class="bi bi-trash"></i>
+                                                </button>
+                                            </form>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                    {% if not arfs.items %}
+                                    <tr>
+                                        <td colspan="10" class="text-center text-muted py-4">
+                                            Aucun ARF créé.
+                                        </td>
+                                    </tr>
+                                    {% endif %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                {% if arfs.pages > 1 %}
+                <nav class="mt-4">
+                    <ul class="pagination justify-content-center">
+                        {% if arfs.has_prev %}
+                            <li class="page-item"><a class="page-link" href="?page={{ arfs.prev_num }}">Précédent</a></li>
+                        {% endif %}
+                        {% for page_num in arfs.iter_pages() %}
+                            {% if page_num %}
+                                <li class="page-item {% if page_num == arfs.page %}active{% endif %}">
+                                    <a class="page-link" href="?page={{ page_num }}">{{ page_num }}</a>
+                                </li>
+                            {% else %}
+                                <li class="page-item disabled"><span class="page-link">...</span></li>
+                            {% endif %}
+                        {% endfor %}
+                        {% if arfs.has_next %}
+                            <li class="page-item"><a class="page-link" href="?page={{ arfs.next_num }}">Suivant</a></li>
+                        {% endif %}
+                    </ul>
+                </nav>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

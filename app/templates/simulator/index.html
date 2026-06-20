@@ -1,0 +1,129 @@
+{% extends "base.html" %}
+
+{% block title %}Simulateur d'investissement - TSI{% endblock %}
+
+{% block content %}
+<div class="container py-5 mt-5">
+    <div class="text-center mb-5">
+        <h1 class="fw-bold">Simulateur d'investissement</h1>
+        <p class="text-muted lead">Estimez vos rendements en investissant en ARF</p>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-5">
+            <div class="card shadow-sm">
+                <div class="card-header bg-white">
+                    <h5 class="mb-0 fw-bold"><i class="bi bi-calculator me-2"></i>Paramètres</h5>
+                </div>
+                <div class="card-body">
+                    <form method="POST">
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold">Montant à investir (€)</label>
+                            <input type="number" name="investment" class="form-control" value="{{ request.form.get('investment', 1000) }}" min="10" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold">Prix par tikec (€)</label>
+                            <input type="number" name="unit_price" class="form-control" value="{{ request.form.get('unit_price', 100) }}" min="1" step="0.01" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold">Rendement attendu (% / an)</label>
+                            <input type="number" name="expected_return" class="form-control" value="{{ request.form.get('expected_return', 8.5) }}" min="0" max="50" step="0.1" required>
+                        </div>
+                        <div class="mb-4">
+                            <label class="form-label fw-semibold">Durée (mois)</label>
+                            <input type="number" name="duration" class="form-control" value="{{ request.form.get('duration', 12) }}" min="1" max="120" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary btn-lg w-100">
+                            <i class="bi bi-calculator me-2"></i>Calculer
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-7">
+            {% if result %}
+            <div class="card shadow-sm mb-4">
+                <div class="card-header bg-white">
+                    <h5 class="mb-0 fw-bold"><i class="bi bi-graph-up me-2 text-success"></i>Résultats de la simulation</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row g-4 mb-4">
+                        <div class="col-md-4 text-center">
+                            <div class="bg-light rounded p-3">
+                                <p class="text-muted small mb-1">Investissement initial</p>
+                                <p class="fw-bold text-primary mb-0" style="font-size: 1.5rem;">{{ "{:,.0f}".format(result.investment) }} €</p>
+                            </div>
+                        </div>
+                        <div class="col-md-4 text-center">
+                            <div class="bg-light rounded p-3">
+                                <p class="text-muted small mb-1">Valeur finale</p>
+                                <p class="fw-bold text-success mb-0" style="font-size: 1.5rem;">{{ "{:,.2f}".format(result.final_value) }} €</p>
+                            </div>
+                        </div>
+                        <div class="col-md-4 text-center">
+                            <div class="bg-light rounded p-3">
+                                <p class="text-muted small mb-1">Gain estimé</p>
+                                <p class="fw-bold text-gold mb-0" style="font-size: 1.5rem;">+{{ "{:,.2f}".format(result.gain) }} €</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row g-4">
+                        <div class="col-md-4 text-center">
+                            <p class="text-muted small mb-1">Tikecs acquis</p>
+                            <p class="fw-bold mb-0">{{ result.units }} tikecs</p>
+                        </div>
+                        <div class="col-md-4 text-center">
+                            <p class="text-muted small mb-1">Revenu mensuel estimé</p>
+                            <p class="fw-bold mb-0">{{ "{:,.2f}".format(result.monthly_income) }} €</p>
+                        </div>
+                        <div class="col-md-4 text-center">
+                            <p class="text-muted small mb-1">Rendement total</p>
+                            <p class="fw-bold text-success mb-0">+{{ result.return_percentage }}%</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h6 class="fw-bold mb-3">Détail mois par mois</h6>
+                    <div class="table-responsive">
+                        <table class="table table-sm">
+                            <thead>
+                                <tr>
+                                    <th>Mois</th>
+                                    <th>Valeur</th>
+                                    <th>Gain</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% set monthly_rate = result.expected_return / 100 / 12 %}
+                                {% set value = result.investment %}
+                                {% for month in range(1, result.duration + 1) %}
+                                    {% set value = value * (1 + monthly_rate) %}
+                                    <tr>
+                                        <td>{{ month }}</td>
+                                        <td>{{ "{:,.2f}".format(value) }} €</td>
+                                        <td class="text-success">+{{ "{:,.2f}".format(value - result.investment) }} €</td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            {% else %}
+            <div class="card shadow-sm">
+                <div class="card-body text-center py-5">
+                    <i class="bi bi-graph-up text-muted" style="font-size: 4rem;"></i>
+                    <h4 class="mt-3">Estimez vos rendements</h4>
+                    <p class="text-muted">Renseignez les paramètres et cliquez sur "Calculer" pour obtenir une simulation.</p>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

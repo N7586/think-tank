@@ -1,0 +1,149 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard Admin - TSI{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-5 mt-4">
+    <div class="row">
+        <div class="col-lg-2 bg-dark min-vh-100 position-fixed d-none d-lg-block" style="padding-top: 80px;">
+            <nav class="nav flex-column p-3">
+                <a class="nav-link text-light active" href="{{ url_for('admin.dashboard') }}">
+                    <i class="bi bi-speedometer2 me-2"></i>Dashboard
+                </a>
+                <a class="nav-link text-light" href="{{ url_for('admin.users_list') }}">
+                    <i class="bi bi-people me-2"></i>Utilisateurs
+                </a>
+                <a class="nav-link text-light" href="{{ url_for('blog.index') }}">
+                    <i class="bi bi-journal-text me-2"></i>Blog
+                </a>
+                <a class="nav-link text-light" href="{{ url_for('arf.index') }}">
+                    <i class="bi bi-coin me-2"></i>ARF
+                </a>
+                <a class="nav-link text-light" href="{{ url_for('marketplace.index') }}">
+                    <i class="bi bi-shop me-2"></i>Marketplace
+                </a>
+                <hr class="border-secondary">
+                <a class="nav-link text-light" href="{{ url_for('main.home') }}">
+                    <i class="bi bi-house me-2"></i>Retour au site
+                </a>
+            </nav>
+        </div>
+
+        <div class="col-lg-10 offset-lg-2">
+            <div class="p-4">
+                <h1 class="fw-bold mb-4">Tableau de bord</h1>
+                <p class="text-muted mb-4">Bienvenue, {{ current_user.full_name }}</p>
+
+                <div class="row mb-4">
+                    <div class="col-md-3 mb-3">
+                        <div class="card stat-card shadow-sm">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <p class="text-muted mb-1">Utilisateurs</p>
+                                        <p class="stat-number mb-0">{{ total_users }}</p>
+                                    </div>
+                                    <i class="bi bi-people text-primary" style="font-size: 2rem; opacity: 0.3;"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <div class="card stat-card shadow-sm">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <p class="text-muted mb-1">Actifs</p>
+                                        <p class="stat-number mb-0 text-success">{{ active_users }}</p>
+                                    </div>
+                                    <i class="bi bi-check-circle text-success" style="font-size: 2rem; opacity: 0.3;"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <div class="card stat-card shadow-sm">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <p class="text-muted mb-1">Bloqués</p>
+                                        <p class="stat-number mb-0 text-danger">{{ blocked_users }}</p>
+                                    </div>
+                                    <i class="bi bi-x-circle text-danger" style="font-size: 2rem; opacity: 0.3;"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <div class="card stat-card shadow-sm">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <p class="text-muted mb-1">Admins</p>
+                                        <p class="stat-number mb-0 text-warning">{{ total_admins }}</p>
+                                    </div>
+                                    <i class="bi bi-shield-check text-warning" style="font-size: 2rem; opacity: 0.3;"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card shadow-sm">
+                    <div class="card-header bg-white d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0 fw-semibold">Derniers inscrits</h5>
+                        <a href="{{ url_for('admin.users_list') }}" class="btn btn-outline-primary btn-sm">
+                            Voir tous <i class="bi bi-arrow-right ms-1"></i>
+                        </a>
+                    </div>
+                    <div class="card-body p-0">
+                        <div class="table-responsive">
+                            <table class="table table-hover mb-0">
+                                <thead>
+                                    <tr>
+                                        <th>Nom</th>
+                                        <th>Email</th>
+                                        <th>Téléphone</th>
+                                        <th>Inscription</th>
+                                        <th>Statut</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for user in recent_users %}
+                                    <tr>
+                                        <td class="fw-semibold">{{ user.full_name }}</td>
+                                        <td>{{ user.email }}</td>
+                                        <td>{{ user.phone or '-' }}</td>
+                                        <td>{{ user.created_at.strftime('%d/%m/%Y') }}</td>
+                                        <td>
+                                            {% if user.is_active %}
+                                                <span class="badge badge-active">Actif</span>
+                                            {% else %}
+                                                <span class="badge badge-blocked">Bloqué</span>
+                                            {% endif %}
+                                        </td>
+                                        <td>
+                                            <a href="{{ url_for('admin.user_detail', user_id=user.id) }}" class="btn btn-outline-primary btn-sm">
+                                                <i class="bi bi-eye"></i>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                    {% if not recent_users %}
+                                    <tr>
+                                        <td colspan="6" class="text-center text-muted py-4">
+                                            Aucun utilisateur inscrit pour le moment.
+                                        </td>
+                                    </tr>
+                                    {% endif %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

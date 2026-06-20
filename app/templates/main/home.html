@@ -1,0 +1,169 @@
+{% extends "base.html" %}
+
+{% block title %}TSI - Tendereo Sustainability Institute{% endblock %}
+
+{% block content %}
+<section class="hero-section">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-7">
+                <h1 class="display-4 fw-bold mb-4">
+                    Transformer l'illiquidité en levier de <span class="text-gold">développement durable</span>
+                </h1>
+                <p class="lead mb-4">
+                    Le Tendereo Sustainability Institute conçoit des mécanismes financiers innovants pour libérer la valeur dormante des droits contractuels en Afrique et dans les économies émergentes.
+                </p>
+                <div class="d-flex gap-3">
+                    <a href="{{ url_for('auth.register') }}" class="btn btn-gold btn-lg">
+                        <i class="bi bi-person-plus me-2"></i>Rejoindre TSI
+                    </a>
+                    <a href="{{ url_for('main.about') }}" class="btn btn-outline-light btn-lg">
+                        Découvrir notre mission
+                    </a>
+                </div>
+            </div>
+            <div class="col-lg-5 text-center mt-5 mt-lg-0">
+                <i class="bi bi-globe-americas text-gold" style="font-size: 12rem; opacity: 0.3;"></i>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="py-5">
+    <div class="container">
+        <div class="text-center mb-5">
+            <h2 class="section-title fw-bold">Notre Mission</h2>
+            <p class="text-muted lead">Faire de la finance un outil de transformation locale</p>
+        </div>
+        <div class="row g-4">
+            <div class="col-md-4">
+                <div class="card h-100 shadow-sm border-0">
+                    <div class="card-body text-center p-4">
+                        <i class="bi bi-building text-primary" style="font-size: 3rem;"></i>
+                        <h4 class="fw-bold mt-3">Aux États</h4>
+                        <p class="text-muted">Financer les infrastructures sans s'endetter en titrisant leurs dépenses d'investissement.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card h-100 shadow-sm border-0">
+                    <div class="card-body text-center p-4">
+                        <i class="bi bi-shop text-primary" style="font-size: 3rem;"></i>
+                        <h4 class="fw-bold mt-3">Aux entreprises</h4>
+                        <p class="text-muted">Permettre aux PME d'être payées le jour même de leur prestation.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card h-100 shadow-sm border-0">
+                    <div class="card-body text-center p-4">
+                        <i class="bi bi-people text-primary" style="font-size: 3rem;"></i>
+                        <h4 class="fw-bold mt-3">Aux citoyens</h4>
+                        <p class="text-muted">Investir dès 10 € dans l'économie réelle et devenir co-producteur de la richesse nationale.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="py-5 bg-white">
+    <div class="container">
+        <div class="text-center mb-5">
+            <h2 class="section-title fw-bold">Le Tenderism</h2>
+            <p class="text-muted lead">Une doctrine économique pour la souveraineté financière</p>
+        </div>
+        <div class="row align-items-center">
+            <div class="col-lg-6 mb-4 mb-lg-0">
+                <div class="card shadow-sm border-0">
+                    <div class="card-body p-4">
+                        <ul class="list-unstyled">
+                            <li class="mb-3">
+                                <i class="bi bi-check-circle-fill text-gold me-2"></i>
+                                <strong>Actualisation dynamique</strong> des droits contractuels
+                            </li>
+                            <li class="mb-3">
+                                <i class="bi bi-check-circle-fill text-gold me-2"></i>
+                                <strong>Clauses juridiques standardisées</strong>
+                            </li>
+                            <li class="mb-3">
+                                <i class="bi bi-check-circle-fill text-gold me-2"></i>
+                                <strong>Notation de la gouvernance</strong>
+                            </li>
+                            <li class="mb-3">
+                                <i class="bi bi-check-circle-fill text-gold me-2"></i>
+                                <strong>Marché secondaire organisé</strong>
+                            </li>
+                            <li class="mb-3">
+                                <i class="bi bi-check-circle-fill text-gold me-2"></i>
+                                <strong>Anti-spéculation</strong> et adossement à des actifs réels
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <h3 class="fw-bold">La liquidité est un bien public</h3>
+                <p class="text-muted">
+                    En organisant un marché transparent et accessible des droits contractuels, nous permettons aux États de financer leurs infrastructures sans s'endetter, aux entreprises d'être payées immédiatement, et aux citoyens d'investir directement dans l'économie réelle.
+                </p>
+                <a href="{{ url_for('main.about') }}" class="btn btn-primary">
+                    En savoir plus <i class="bi bi-arrow-right ms-1"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="py-5">
+    <div class="container">
+        <div class="text-center mb-5">
+            <h2 class="section-title fw-bold">Nos Objectifs 2030</h2>
+        </div>
+        <div class="row g-4">
+            <div class="col-md-6 col-lg-3">
+                <div class="card h-100 shadow-sm border-0 text-center">
+                    <div class="card-body p-4">
+                        <div class="display-4 fw-bold text-primary">5+</div>
+                        <p class="text-muted mt-2">Milliards d'euros d'ARF émis</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-3">
+                <div class="card h-100 shadow-sm border-0 text-center">
+                    <div class="card-body p-4">
+                        <div class="display-4 fw-bold text-primary">100K+</div>
+                        <p class="text-muted mt-2">Emplois créés</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-3">
+                <div class="card h-100 shadow-sm border-0 text-center">
+                    <div class="card-body p-4">
+                        <div class="display-4 fw-bold text-primary">54</div>
+                        <p class="text-muted mt-2">Pays africains couverts</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-3">
+                <div class="card h-100 shadow-sm border-0 text-center">
+                    <div class="card-body p-4">
+                        <div class="display-4 fw-bold text-primary">1M+</div>
+                        <p class="text-muted mt-2">Investisseurs citoyens</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="py-5 bg-primary text-white">
+    <div class="container text-center">
+        <h2 class="fw-bold mb-3">Prêt à rejoindre la révolution financière ?</h2>
+        <p class="lead mb-4 opacity-75">Créez votre compte et commencez à investir dans l'économie réelle.</p>
+        <a href="{{ url_for('auth.register') }}" class="btn btn-gold btn-lg">
+            <i class="bi bi-person-plus me-2"></i>Créer mon compte gratuit
+        </a>
+    </div>
+</section>
+{% endblock %}

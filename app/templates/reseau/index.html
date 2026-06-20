@@ -1,0 +1,221 @@
+{% extends "base.html" %}
+
+{% block title %}Espace Reseau - TSI{% endblock %}
+
+{% block extra_css %}
+<style>
+    .reseau-hero {
+        background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+        color: #fff;
+        padding: 100px 0 60px;
+        text-align: center;
+    }
+    .reseau-hero h1 {
+        font-size: 2.5rem;
+        font-weight: 800;
+    }
+    .reseau-hero .lead {
+        font-size: 1.15rem;
+        opacity: 0.85;
+    }
+    .live-dot {
+        width: 12px;
+        height: 12px;
+        background: #e74c3c;
+        border-radius: 50%;
+        display: inline-block;
+        animation: pulse-live 1.5s infinite;
+    }
+    @keyframes pulse-live {
+        0%, 100% { opacity: 1; transform: scale(1); }
+        50% { opacity: 0.5; transform: scale(1.3); }
+    }
+    .meeting-card {
+        border-left: 4px solid #28a745;
+        transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .meeting-card:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 8px 25px rgba(0,0,0,0.12);
+    }
+    .article-card {
+        transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .article-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 30px rgba(0,0,0,0.12);
+    }
+    .category-badge {
+        font-size: 0.75rem;
+        padding: 4px 10px;
+        border-radius: 20px;
+        font-weight: 600;
+    }
+    .join-btn {
+        background: linear-gradient(135deg, #28a745, #1e7e34);
+        border: none;
+        color: #fff;
+        padding: 8px 20px;
+        border-radius: 20px;
+        font-weight: 600;
+        transition: all 0.3s;
+    }
+    .join-btn:hover {
+        transform: scale(1.05);
+        box-shadow: 0 4px 15px rgba(40,167,69,0.4);
+        color: #fff;
+    }
+    .section-divider {
+        border-top: 3px solid var(--tsi-green);
+        width: 60px;
+        margin: 0 auto;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<section class="reseau-hero">
+    <div class="container">
+        <h1 class="fw-bold mb-3">
+            <i class="bi bi-people-fill me-2"></i>Espace Reseau
+        </h1>
+        <p class="lead">Rejoignez des reunions en direct, echangez avec la communaute et partagez vos connaissances.</p>
+    </div>
+</section>
+
+<section class="py-5">
+    <div class="container">
+
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h3 class="fw-bold"><i class="bi bi-camera-video-fill text-success me-2"></i>Actions rapides</h3>
+            <a href="{{ url_for('reseau.meetings_create') }}" class="btn btn-success btn-lg">
+                <i class="bi bi-plus-circle me-2"></i>Demarrer une reunion
+            </a>
+        </div>
+
+        <!-- REUNIONS ACTIVES -->
+        <div class="mb-5">
+            <div class="d-flex align-items-center mb-4">
+                <div class="section-divider me-3"></div>
+                <h3 class="fw-bold mb-0">
+                    <span class="live-dot me-2"></span>Reunions en cours
+                </h3>
+            </div>
+
+            {% if active_meetings %}
+            <div class="row g-4">
+                {% for meeting in active_meetings %}
+                <div class="col-md-6 col-lg-4">
+                    <div class="card meeting-card h-100 shadow-sm">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-start mb-3">
+                                <span class="badge bg-success">
+                                    <span class="live-dot me-1" style="width:8px;height:8px;"></span> EN DIRECT
+                                </span>
+                                <small class="text-muted">{{ meeting.active_participants_count }} connecte(s)</small>
+                            </div>
+                            <h5 class="fw-bold">{{ meeting.title }}</h5>
+                            <p class="text-muted small mb-3">
+                                {% if meeting.description %}
+                                    {{ meeting.description[:100] }}{% if meeting.description|length > 100 %}...{% endif %}
+                                {% else %}
+                                    Aucune description
+                                {% endif %}
+                            </p>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <small class="text-muted">
+                                    <i class="bi bi-person me-1"></i>{{ meeting.host.first_name }} {{ meeting.host.last_name }}
+                                </small>
+                                <a href="{{ url_for('reseau.meetings_room', room_id=meeting.room_id) }}" class="join-btn">
+                                    <i class="bi bi-box-arrow-in-right me-1"></i>Rejoindre
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            {% else %}
+            <div class="text-center py-5">
+                <i class="bi bi-camera-video-off display-1 text-muted"></i>
+                <p class="text-muted mt-3">Aucune reunion en cours pour le moment.</p>
+                <p class="text-muted">Revenez plus tard ou creez une reunion si vous etes admin.</p>
+            </div>
+            {% endif %}
+
+            <div class="text-center mt-4">
+                <a href="{{ url_for('reseau.meetings_list') }}" class="btn btn-outline-success">
+                    Voir toutes les reunions <i class="bi bi-arrow-right ms-1"></i>
+                </a>
+            </div>
+        </div>
+
+        <hr class="my-5">
+
+        <!-- ARTICLES -->
+        <div>
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <div class="d-flex align-items-center">
+                    <div class="section-divider me-3"></div>
+                    <h3 class="fw-bold mb-0">
+                        <i class="bi bi-newspaper me-2"></i>Derniers articles
+                    </h3>
+                </div>
+                <a href="{{ url_for('reseau.articles_create') }}" class="btn btn-primary">
+                    <i class="bi bi-pencil-square me-1"></i>Ecrire un article
+                </a>
+            </div>
+
+            {% if recent_articles %}
+            <div class="row g-4">
+                {% for article in recent_articles %}
+                <div class="col-md-6 col-lg-4">
+                    <div class="card article-card h-100 shadow-sm">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-start mb-2">
+                                <span class="category-badge" style="background: rgba(0,180,100,0.12); color: #00b464;">
+                                    {{ article.category or 'General' }}
+                                </span>
+                                <small class="text-muted">{{ article.published_at.strftime('%d %b %Y') }}</small>
+                            </div>
+                            <h5 class="fw-bold mt-2">{{ article.title }}</h5>
+                            <p class="text-muted small">{{ article.excerpt }}</p>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <small class="text-muted">
+                                    <i class="bi bi-person me-1"></i>{{ article.author.first_name }} {{ article.author.last_name }}
+                                </small>
+                                <a href="{{ url_for('reseau.articles_detail', article_id=article.id) }}" class="btn btn-sm btn-outline-primary">
+                                    Lire <i class="bi bi-arrow-right ms-1"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            {% else %}
+            <div class="text-center py-5">
+                <i class="bi bi-journal-text display-1 text-muted"></i>
+                <p class="text-muted mt-3">Aucun article publie pour le moment.</p>
+                <p class="text-muted">Soyez le premier a partager vos connaissances !</p>
+            </div>
+            {% endif %}
+
+            <div class="text-center mt-4">
+                <a href="{{ url_for('reseau.articles_list') }}" class="btn btn-outline-primary">
+                    Voir tous les articles <i class="bi bi-arrow-right ms-1"></i>
+                </a>
+            </div>
+        </div>
+
+        {% if current_user.is_admin and pending_articles_count > 0 %}
+        <div class="alert alert-warning mt-4">
+            <i class="bi bi-exclamation-triangle me-2"></i>
+            <strong>{{ pending_articles_count }}</strong> article(s) en attente de validation.
+            <a href="{{ url_for('reseau.admin_articles') }}" class="alert-link">Les reviewer</a>
+        </div>
+        {% endif %}
+
+    </div>
+</section>
+{% endblock %}

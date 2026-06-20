@@ -1,0 +1,119 @@
+{% extends "base.html" %}
+
+{% block title %}Créer un ARF - Admin TSI{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-5 mt-4">
+    <div class="row">
+        <div class="col-lg-2 bg-dark min-vh-100 position-fixed d-none d-lg-block" style="padding-top: 80px;">
+            <nav class="nav flex-column p-3">
+                <a class="nav-link text-light" href="{{ url_for('admin.dashboard') }}">
+                    <i class="bi bi-speedometer2 me-2"></i>Dashboard
+                </a>
+                <a class="nav-link text-light" href="{{ url_for('admin.users_list') }}">
+                    <i class="bi bi-people me-2"></i>Utilisateurs
+                </a>
+                <a class="nav-link text-light active" href="{{ url_for('arf.admin_list') }}">
+                    <i class="bi bi-coin me-2"></i>ARF
+                </a>
+                <a class="nav-link text-light" href="{{ url_for('marketplace.index') }}">
+                    <i class="bi bi-shop me-2"></i>Marketplace
+                </a>
+                <hr class="border-secondary">
+                <a class="nav-link text-light" href="{{ url_for('main.home') }}">
+                    <i class="bi bi-house me-2"></i>Retour au site
+                </a>
+            </nav>
+        </div>
+
+        <div class="col-lg-10 offset-lg-2">
+            <div class="p-4">
+                <a href="{{ url_for('arf.admin_list') }}" class="text-decoration-none text-muted">
+                    <i class="bi bi-arrow-left me-1"></i>Retour à la liste
+                </a>
+                <h1 class="fw-bold mt-2 mb-4">Créer un ARF</h1>
+
+                <div class="card shadow-sm">
+                    <div class="card-body p-4">
+                        <form method="POST" novalidate>
+                            {{ form.hidden_tag() }}
+
+                            <div class="mb-3">
+                                <label class="form-label fw-semibold">Nom de l'ARF</label>
+                                {{ form.name(class="form-control" + (" is-invalid" if form.name.errors else ""), placeholder="Ex: ARF Agro-industrie Côte d'Ivoire") }}
+                                {% for error in form.name.errors %}
+                                    <div class="invalid-feedback">{{ error }}</div>
+                                {% endfor %}
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label fw-semibold">Description</label>
+                                {{ form.description(class="form-control" + (" is-invalid" if form.description.errors else ""), rows="4", placeholder="Description détaillée de l'ARF...") }}
+                                {% for error in form.description.errors %}
+                                    <div class="invalid-feedback">{{ error }}</div>
+                                {% endfor %}
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-4 mb-3">
+                                    <label class="form-label fw-semibold">Secteur</label>
+                                    {{ form.sector(class="form-select" + (" is-invalid" if form.sector.errors else "")) }}
+                                    {% for error in form.sector.errors %}
+                                        <div class="invalid-feedback">{{ error }}</div>
+                                    {% endfor %}
+                                </div>
+                                <div class="col-md-4 mb-3">
+                                    <label class="form-label fw-semibold">Pays</label>
+                                    {{ form.country(class="form-control" + (" is-invalid" if form.country.errors else ""), placeholder="Ex: Côte d'Ivoire") }}
+                                    {% for error in form.country.errors %}
+                                        <div class="invalid-feedback">{{ error }}</div>
+                                    {% endfor %}
+                                </div>
+                                <div class="col-md-4 mb-3">
+                                    <label class="form-label fw-semibold">Niveau de risque</label>
+                                    {{ form.risk_level(class="form-select" + (" is-invalid" if form.risk_level.errors else "")) }}
+                                    {% for error in form.risk_level.errors %}
+                                        <div class="invalid-feedback">{{ error }}</div>
+                                    {% endfor %}
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-4 mb-3">
+                                    <label class="form-label fw-semibold">Valeur totale (€)</label>
+                                    {{ form.total_value(class="form-control" + (" is-invalid" if form.total_value.errors else ""), placeholder="1000000") }}
+                                    {% for error in form.total_value.errors %}
+                                        <div class="invalid-feedback">{{ error }}</div>
+                                    {% endfor %}
+                                </div>
+                                <div class="col-md-4 mb-3">
+                                    <label class="form-label fw-semibold">Prix par tikec (€)</label>
+                                    {{ form.unit_price(class="form-control" + (" is-invalid" if form.unit_price.errors else ""), placeholder="100") }}
+                                    {% for error in form.unit_price.errors %}
+                                        <div class="invalid-feedback">{{ error }}</div>
+                                    {% endfor %}
+                                </div>
+                                <div class="col-md-4 mb-3">
+                                    <label class="form-label fw-semibold">Rendement attendu (%)</label>
+                                    {{ form.expected_return(class="form-control" + (" is-invalid" if form.expected_return.errors else ""), placeholder="8.5") }}
+                                    {% for error in form.expected_return.errors %}
+                                        <div class="invalid-feedback">{{ error }}</div>
+                                    {% endfor %}
+                                </div>
+                            </div>
+
+                            <hr>
+                            <div class="d-flex justify-content-end gap-2">
+                                <a href="{{ url_for('arf.admin_list') }}" class="btn btn-outline-secondary">Annuler</a>
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="bi bi-plus-lg me-1"></i>Créer l'ARF
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

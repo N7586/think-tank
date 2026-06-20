@@ -1,0 +1,172 @@
+# English translations for TSI Platform
+msgid ""
+msgstr ""
+"Project-Id-Version: TSI Platform 1.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2024-01-01 00:00+0000\n"
+"PO-Revision-Date: 2024-01-01 00:00+0000\n"
+"Last-Translator: TSI\n"
+"Language: en\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+# Navigation
+msgid "Home"
+msgstr "Home"
+
+msgid "About"
+msgstr "About"
+
+msgid "ARF"
+msgstr "ARF"
+
+msgid "Marketplace"
+msgstr "Marketplace"
+
+msgid "Simulator"
+msgstr "Simulator"
+
+msgid "Blog"
+msgstr "Blog"
+
+msgid "Contact"
+msgstr "Contact"
+
+msgid "Login"
+msgstr "Login"
+
+msgid "Register"
+msgstr "Register"
+
+msgid "Logout"
+msgstr "Logout"
+
+msgid "My Account"
+msgstr "My Account"
+
+msgid "Dashboard"
+msgstr "Dashboard"
+
+# Auth
+msgid "Email"
+msgstr "Email"
+
+msgid "Password"
+msgstr "Password"
+
+msgid "Remember me"
+msgstr "Remember me"
+
+msgid "Don't have an account?"
+msgstr "Don't have an account?"
+
+msgid "Already have an account?"
+msgstr "Already have an account?"
+
+msgid "First Name"
+msgstr "First Name"
+
+msgid "Last Name"
+msgstr "Last Name"
+
+msgid "Phone"
+msgstr "Phone"
+
+msgid "Language"
+msgstr "Language"
+
+msgid "Confirm Password"
+msgstr "Confirm Password"
+
+# ARF
+msgid "ARF Portfolio"
+msgstr "ARF Portfolio"
+
+msgid "Invest in the real economy"
+msgstr "Invest in the real economy"
+
+msgid "Available Units"
+msgstr "Available Units"
+
+msgid "Price per tikec"
+msgstr "Price per tikec"
+
+msgid "Expected Return"
+msgstr "Expected Return"
+
+msgid "Risk Level"
+msgstr "Risk Level"
+
+msgid "Subscribe"
+msgstr "Subscribe"
+
+# Marketplace
+msgid "Contractual rights available"
+msgstr "Contractual rights available"
+
+msgid "Publish an offer"
+msgstr "Publish an offer"
+
+# Simulator
+msgid "Investment Simulator"
+msgstr "Investment Simulator"
+
+msgid "Investment Amount"
+msgstr "Investment Amount"
+
+msgid "Duration"
+msgstr "Duration"
+
+msgid "Calculate"
+msgstr "Calculate"
+
+# Payment
+msgid "Payment"
+msgstr "Payment"
+
+msgid "Payment Status"
+msgstr "Payment Status"
+
+msgid "Transaction History"
+msgstr "Transaction History"
+
+# General
+msgid "Save"
+msgstr "Save"
+
+msgid "Cancel"
+msgstr "Cancel"
+
+msgid "Delete"
+msgstr "Delete"
+
+msgid "Edit"
+msgstr "Edit"
+
+msgid "View"
+msgstr "View"
+
+msgid "Search"
+msgstr "Search"
+
+msgid "Filter"
+msgstr "Filter"
+
+msgid "Back"
+msgstr "Back"
+
+msgid "Loading..."
+msgstr "Loading..."
+
+msgid "Success"
+msgstr "Success"
+
+msgid "Error"
+msgstr "Error"
+
+msgid "Warning"
+msgstr "Warning"
+
+msgid "Info"
+msgstr "Info"

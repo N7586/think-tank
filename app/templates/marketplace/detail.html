@@ -1,0 +1,92 @@
+{% extends "base.html" %}
+
+{% block title %}{{ offer.title }} - Marketplace TSI{% endblock %}
+
+{% block content %}
+<div class="container py-5 mt-5">
+    <div class="mb-4">
+        <a href="{{ url_for('marketplace.index') }}" class="text-decoration-none text-muted">
+            <i class="bi bi-arrow-left me-1"></i>Retour à la marketplace
+        </a>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-8">
+            <div class="card shadow-sm mb-4">
+                <div class="card-header bg-white d-flex justify-content-between align-items-center">
+                    <span class="badge bg-{{ offer.status_color }} fs-6">{{ offer.status_label }}</span>
+                    <span class="badge bg-primary">{{ offer.contract_type }}</span>
+                </div>
+                <div class="card-body">
+                    <h1 class="fw-bold mb-3">{{ offer.title }}</h1>
+                    <p class="text-muted mb-4">{{ offer.description }}</p>
+
+                    <div class="row g-4 mb-4">
+                        <div class="col-md-4 text-center">
+                            <div class="bg-light rounded p-3">
+                                <p class="text-muted small mb-1">Valeur du droit</p>
+                                <p class="fw-bold text-primary mb-0" style="font-size: 1.3rem;">{{ "{:,.0f}".format(offer.value) }} €</p>
+                            </div>
+                        </div>
+                        <div class="col-md-4 text-center">
+                            <div class="bg-light rounded p-3">
+                                <p class="text-muted small mb-1">Type de contrat</p>
+                                <p class="fw-bold mb-0">{{ offer.contract_type }}</p>
+                            </div>
+                        </div>
+                        <div class="col-md-4 text-center">
+                            <div class="bg-light rounded p-3">
+                                <p class="text-muted small mb-1">Échéance</p>
+                                <p class="fw-bold mb-0">{{ offer.deadline.strftime('%d/%m/%Y') if offer.deadline else 'Non définie' }}</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row text-muted">
+                        <div class="col-md-6">
+                            <p><i class="bi bi-person me-2"></i>Publié par : {{ offer.publisher.full_name }}</p>
+                        </div>
+                        <div class="col-md-6">
+                            <p><i class="bi bi-calendar me-2"></i>Le {{ offer.created_at.strftime('%d/%m/%Y à %H:%M') }}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-4">
+            <div class="card shadow-sm mb-4">
+                <div class="card-header bg-white">
+                    <h5 class="mb-0 fw-bold">Intéressé par cette offre ?</h5>
+                </div>
+                <div class="card-body">
+                    {% if current_user.is_authenticated %}
+                        <a href="mailto:contact@tsi-institute.org?subject=Offre Marketplace: {{ offer.title }}" class="btn btn-primary w-100 mb-2">
+                            <i class="bi bi-envelope me-2"></i>Contacter l'émetteur
+                        </a>
+                        <p class="text-muted small text-center">Un conseiller TSI vous mettra en relation.</p>
+                    {% else %}
+                        <a href="{{ url_for('auth.login') }}" class="btn btn-primary w-100 mb-2">
+                            <i class="bi bi-box-arrow-in-right me-1"></i>Se connecter
+                        </a>
+                        <p class="text-muted small text-center">Connectez-vous pour contacter l'émetteur.</p>
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="card shadow-sm">
+                <div class="card-header bg-white">
+                    <h5 class="mb-0 fw-bold">Garanties TSI</h5>
+                </div>
+                <div class="card-body">
+                    <ul class="list-unstyled mb-0">
+                        <li class="mb-2"><i class="bi bi-shield-check text-success me-2"></i>Vérification des droits</li>
+                        <li class="mb-2"><i class="bi bi-file-check text-primary me-2"></i>Clauses standardisées</li>
+                        <li><i class="bi bi-globe text-gold me-2"></i>Marché transparent</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

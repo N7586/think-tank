@@ -1,0 +1,109 @@
+{% extends "base.html" %}
+
+{% block title %}Articles - TSI{% endblock %}
+
+{% block extra_css %}
+<style>
+    .article-card {
+        transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .article-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 30px rgba(0,0,0,0.12);
+    }
+    .category-badge {
+        font-size: 0.75rem;
+        padding: 4px 10px;
+        border-radius: 20px;
+        font-weight: 600;
+    }
+    .category-active {
+        background: var(--tsi-green) !important;
+        color: #fff !important;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<section class="py-5" style="margin-top: 80px;">
+    <div class="container">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2 class="fw-bold"><i class="bi bi-newspaper me-2"></i>Articles de la communaute</h2>
+            <a href="{{ url_for('reseau.articles_create') }}" class="btn btn-primary">
+                <i class="bi bi-pencil-square me-1"></i>Ecrire un article
+            </a>
+        </div>
+
+        <!-- FILTRES -->
+        <div class="d-flex flex-wrap gap-2 mb-4">
+            <a href="{{ url_for('reseau.articles_list') }}"
+               class="btn btn-sm {% if not category %}category-active{% else %}btn-outline-secondary{% endif %}">
+                Tous
+            </a>
+            {% for cat_label, cat_val in [('Investissement', 'investissement'), ('Finance', 'finance'),
+                ('Economie', 'economie'), ('Dev. durable', 'dveloppement'), ('Actualite', 'actualite'),
+                ('Tutoriel', 'tutorial'), ('Autre', 'autre')] %}
+            <a href="{{ url_for('reseau.articles_list', category=cat_val) }}"
+               class="btn btn-sm {% if category == cat_val %}category-active{% else %}btn-outline-secondary{% endif %}">
+                {{ cat_label }}
+            </a>
+            {% endfor %}
+        </div>
+
+        {% if articles.items %}
+        <div class="row g-4">
+            {% for article in articles.items %}
+            <div class="col-md-6 col-lg-4">
+                <div class="card article-card h-100 shadow-sm">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-start mb-2">
+                            <span class="category-badge" style="background: rgba(0,180,100,0.12); color: #00b464;">
+                                {{ article.category or 'General' }}
+                            </span>
+                            <small class="text-muted">{{ article.published_at.strftime('%d %b %Y') }}</small>
+                        </div>
+                        <h5 class="fw-bold mt-2">{{ article.title }}</h5>
+                        <p class="text-muted small">{{ article.excerpt }}</p>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <small class="text-muted">
+                                <i class="bi bi-person me-1"></i>{{ article.author.first_name }} {{ article.author.last_name }}
+                                <span class="mx-1">&middot;</span>
+                                <i class="bi bi-eye me-1"></i>{{ article.views }}
+                            </small>
+                            <a href="{{ url_for('reseau.articles_detail', article_id=article.id) }}" class="btn btn-sm btn-outline-primary">
+                                Lire
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+        <!-- PAGINATION -->
+        {% if articles.pages > 1 %}
+        <nav class="mt-4">
+            <ul class="pagination justify-content-center">
+                {% for page_num in articles.iter_pages() %}
+                    {% if page_num %}
+                    <li class="page-item {% if page_num == articles.page %}active{% endif %}">
+                        <a class="page-link" href="{{ url_for('reseau.articles_list', page=page_num, category=category) }}">{{ page_num }}</a>
+                    </li>
+                    {% else %}
+                    <li class="page-item disabled"><span class="page-link">...</span></li>
+                    {% endif %}
+                {% endfor %}
+            </ul>
+        </nav>
+        {% endif %}
+
+        {% else %}
+        <div class="text-center py-5">
+            <i class="bi bi-journal-text display-1 text-muted"></i>
+            <p class="text-muted mt-3">Aucun article trouve.</p>
+            <a href="{{ url_for('reseau.articles_create') }}" class="btn btn-primary">Ecrire le premier article</a>
+        </div>
+        {% endif %}
+    </div>
+</section>
+{% endblock %}

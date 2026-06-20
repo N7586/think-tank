@@ -1,0 +1,709 @@
+{% extends "base.html" %}
+
+{% block title %}Comment utiliser TSI - Guide{% endblock %}
+
+{% block extra_css %}
+<style>
+    /* ===== HERO ===== */
+    .hero-how {
+        background: linear-gradient(135deg, #0a0a1a 0%, #0d1b2a 30%, #1b2838 60%, #0a192f 100%);
+        color: #fff;
+        padding: 160px 0 120px;
+        text-align: center;
+        position: relative;
+        overflow: hidden;
+    }
+    .hero-how::before {
+        content: '';
+        position: absolute;
+        top: -50%;
+        left: -50%;
+        width: 200%;
+        height: 200%;
+        background: radial-gradient(ellipse at 30% 50%, rgba(0,180,100,0.2) 0%, transparent 50%),
+                    radial-gradient(ellipse at 70% 50%, rgba(212,168,67,0.15) 0%, transparent 50%),
+                    radial-gradient(ellipse at 50% 80%, rgba(0,120,255,0.1) 0%, transparent 40%);
+        animation: aurora 15s ease-in-out infinite alternate;
+    }
+    @keyframes aurora {
+        0% { transform: rotate(0deg) scale(1); filter: hue-rotate(0deg); }
+        50% { transform: rotate(3deg) scale(1.05); filter: hue-rotate(20deg); }
+        100% { transform: rotate(-2deg) scale(1); filter: hue-rotate(-10deg); }
+    }
+    .hero-how::after {
+        content: '';
+        position: absolute;
+        top: 0; left: 0; right: 0; bottom: 0;
+        background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.03'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+        opacity: 0.5;
+    }
+    .hero-how h1 {
+        font-size: 3.5rem;
+        font-weight: 900;
+        position: relative;
+        text-shadow: 0 0 40px rgba(0,180,100,0.3), 0 0 80px rgba(0,180,100,0.1);
+        animation: glowText 3s ease-in-out infinite alternate;
+    }
+    @keyframes glowText {
+        0% { text-shadow: 0 0 40px rgba(0,180,100,0.3), 0 0 80px rgba(0,180,100,0.1); }
+        100% { text-shadow: 0 0 60px rgba(0,180,100,0.5), 0 0 120px rgba(0,180,100,0.2), 0 0 200px rgba(0,180,100,0.1); }
+    }
+    .hero-how .lead { font-size: 1.25rem; opacity: 0.85; position: relative; }
+
+    /* ===== PARTICLES ===== */
+    .particles {
+        position: absolute;
+        top: 0; left: 0; width: 100%; height: 100%;
+        pointer-events: none;
+        overflow: hidden;
+    }
+    .particle {
+        position: absolute;
+        border-radius: 50%;
+        animation: float linear infinite;
+        opacity: 0;
+    }
+    @keyframes float {
+        0% { transform: translateY(100vh) rotate(0deg); opacity: 0; }
+        10% { opacity: 1; }
+        90% { opacity: 1; }
+        100% { transform: translateY(-100px) rotate(720deg); opacity: 0; }
+    }
+
+    /* ===== GLOW BADGE ===== */
+    .hero-badge {
+        display: inline-block;
+        background: linear-gradient(135deg, #d4a843, #f0c040, #d4a843);
+        background-size: 200% 200%;
+        color: #0a0a1a;
+        padding: 8px 24px;
+        border-radius: 30px;
+        font-weight: 800;
+        font-size: 0.85rem;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+        margin-bottom: 24px;
+        position: relative;
+        animation: shimmer 3s ease-in-out infinite;
+        box-shadow: 0 0 20px rgba(212,168,67,0.4), 0 0 40px rgba(212,168,67,0.2);
+    }
+    @keyframes shimmer {
+        0%, 100% { background-position: 0% 50%; box-shadow: 0 0 20px rgba(212,168,67,0.4); }
+        50% { background-position: 100% 50%; box-shadow: 0 0 30px rgba(212,168,67,0.6), 0 0 60px rgba(212,168,67,0.3); }
+    }
+
+    /* ===== SCROLL ARROW ===== */
+    .scroll-arrow {
+        font-size: 2.5rem;
+        position: relative;
+        animation: bounceDown 2s infinite;
+        cursor: pointer;
+        display: inline-block;
+        color: #d4a843;
+        filter: drop-shadow(0 0 10px rgba(212,168,67,0.5));
+    }
+    @keyframes bounceDown {
+        0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+        40% { transform: translateY(-15px); }
+        60% { transform: translateY(-7px); }
+    }
+
+    /* ===== LIGHT BEAMS ===== */
+    .light-beam {
+        position: absolute;
+        width: 2px;
+        height: 200px;
+        background: linear-gradient(to top, transparent, rgba(0,180,100,0.6), transparent);
+        animation: beamUp 4s ease-in-out infinite;
+        opacity: 0.3;
+    }
+    @keyframes beamUp {
+        0%, 100% { transform: translateY(0) scaleY(0.5); opacity: 0; }
+        50% { transform: translateY(-300px) scaleY(1.5); opacity: 0.4; }
+    }
+
+    /* ===== PROGRESS BAR ===== */
+    .progress-sticky {
+        position: sticky;
+        top: 0;
+        z-index: 100;
+        background: var(--bs-body-bg, #fff);
+        border-bottom: 1px solid var(--bs-border-color, #dee2e6);
+        padding: 12px 0;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+    }
+    .progress-sticky .step-dot {
+        width: 36px; height: 36px; border-radius: 50%;
+        display: inline-flex; align-items: center; justify-content: center;
+        font-weight: 700; font-size: 0.85rem;
+        background: var(--bs-secondary-bg, #e9ecef);
+        color: var(--bs-secondary-color, #6c757d);
+        transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+    .progress-sticky .step-dot.active {
+        background: #00b464; color: #fff;
+        transform: scale(1.15);
+        box-shadow: 0 0 0 4px rgba(0,180,100,0.25), 0 0 15px rgba(0,180,100,0.4);
+    }
+    .progress-sticky .step-dot.done {
+        background: #00b464; color: #fff;
+    }
+    .progress-sticky .step-line-conn {
+        width: 30px; height: 3px;
+        background: var(--bs-secondary-bg, #e9ecef);
+        display: inline-block; vertical-align: middle;
+        transition: background 0.4s;
+    }
+    .progress-sticky .step-line-conn.done { background: #00b464; }
+
+    /* ===== STEP CARDS ===== */
+    .step-section { padding: 80px 0; position: relative; overflow: hidden; }
+    .step-section:nth-child(odd) { background: var(--bs-body-bg, #fff); }
+    .step-section:nth-child(even) { background: var(--bs-tertiary-bg, #f8f9fa); }
+
+    .step-card {
+        opacity: 0; transform: translateY(80px) scale(0.95);
+        transition: all 0.9s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .step-card.visible { opacity: 1; transform: translateY(0) scale(1); }
+    .step-card.visible .step-icon-ring {
+        animation: popIn 0.6s 0.3s both cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+    @keyframes popIn {
+        0% { transform: scale(0) rotate(-180deg); }
+        100% { transform: scale(1) rotate(0deg); }
+    }
+
+    .step-icon-ring {
+        width: 100px; height: 100px; border-radius: 50%;
+        display: flex; align-items: center; justify-content: center;
+        font-size: 2.8rem; flex-shrink: 0; position: relative;
+        box-shadow: 0 0 30px rgba(0,0,0,0.1);
+    }
+    .step-icon-ring::before {
+        content: '';
+        position: absolute; inset: -4px; border-radius: 50%;
+        background: inherit; filter: blur(15px); opacity: 0.4;
+        animation: pulse-glow 2s ease-in-out infinite alternate;
+    }
+    @keyframes pulse-glow {
+        0% { opacity: 0.3; transform: scale(1); }
+        100% { opacity: 0.6; transform: scale(1.15); }
+    }
+    .step-icon-ring::after {
+        content: '';
+        position: absolute; inset: -10px; border-radius: 50%;
+        border: 2px dashed; border-color: inherit;
+        opacity: 0.25; animation: spinSlow 15s linear infinite;
+    }
+    @keyframes spinSlow { 100% { transform: rotate(360deg); } }
+
+    .step-label {
+        display: inline-block; font-size: 0.75rem; font-weight: 700;
+        letter-spacing: 2px; text-transform: uppercase;
+        padding: 4px 12px; border-radius: 20px; margin-bottom: 12px;
+    }
+    .step-title { font-size: 2rem; font-weight: 800; margin-bottom: 16px; }
+    .step-desc { font-size: 1.1rem; line-height: 1.8; color: var(--bs-secondary-color, #6c757d); }
+    .step-tip {
+        background: rgba(0,180,100,0.06);
+        border-left: 4px solid #00b464;
+        padding: 14px 18px; border-radius: 0 8px 8px 0;
+        margin-top: 16px; font-size: 0.95rem;
+    }
+
+    /* ===== SECTION DIVIDER ===== */
+    .section-divider-glow {
+        height: 3px;
+        background: linear-gradient(90deg, transparent, #00b464, #d4a843, #00b464, transparent);
+        margin: 0 auto;
+        width: 200px;
+        border-radius: 2px;
+        box-shadow: 0 0 10px rgba(0,180,100,0.3);
+        animation: dividerPulse 3s ease-in-out infinite;
+    }
+    @keyframes dividerPulse {
+        0%, 100% { width: 200px; opacity: 0.6; }
+        50% { width: 300px; opacity: 1; }
+    }
+
+    /* ===== MEETING SECTION ===== */
+    .meeting-section {
+        background: linear-gradient(135deg, #0a192f 0%, #112240 50%, #1a3a5c 100%);
+        color: #fff;
+        padding: 100px 0;
+        position: relative;
+        overflow: hidden;
+    }
+    .meeting-section::before {
+        content: '';
+        position: absolute;
+        top: -50%; left: -50%;
+        width: 200%; height: 200%;
+        background: radial-gradient(circle at 50% 50%, rgba(231,76,60,0.1) 0%, transparent 40%);
+        animation: pulseMeeting 8s ease-in-out infinite;
+    }
+    @keyframes pulseMeeting {
+        0%, 100% { transform: scale(1); opacity: 0.5; }
+        50% { transform: scale(1.2); opacity: 1; }
+    }
+
+    /* ===== FLOATING CTA ===== */
+    .cta-float {
+        position: fixed; bottom: 30px; right: 30px; z-index: 1000;
+        background: linear-gradient(135deg, #00b464, #009951);
+        color: #fff; width: 60px; height: 60px; border-radius: 50%;
+        display: flex; align-items: center; justify-content: center;
+        font-size: 1.5rem;
+        box-shadow: 0 4px 20px rgba(0,180,100,0.4), 0 0 40px rgba(0,180,100,0.2);
+        transition: all 0.3s; text-decoration: none;
+        animation: floatCTA 3s ease-in-out infinite;
+    }
+    @keyframes floatCTA {
+        0%, 100% { transform: translateY(0); }
+        50% { transform: translateY(-8px); }
+    }
+    .cta-float:hover {
+        transform: scale(1.15) translateY(-5px) !important;
+        box-shadow: 0 8px 30px rgba(0,180,100,0.6), 0 0 60px rgba(0,180,100,0.3);
+        color: #fff;
+    }
+
+    /* ===== FINAL CTA ===== */
+    .final-cta {
+        background: linear-gradient(135deg, #00b464 0%, #009951 100%);
+        color: #fff; padding: 100px 0; text-align: center; position: relative; overflow: hidden;
+    }
+    .final-cta::before {
+        content: '';
+        position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+        background: radial-gradient(circle at 30% 50%, rgba(255,255,255,0.1) 0%, transparent 50%);
+    }
+    .final-cta h2 { font-size: 2.5rem; font-weight: 800; position: relative; }
+    .final-cta .btn { font-size: 1.1rem; padding: 14px 36px; border-radius: 30px; font-weight: 700; position: relative; }
+
+    /* ===== COUNTERS ===== */
+    .counter-row { display: flex; justify-content: center; gap: 60px; flex-wrap: wrap; margin-top: 40px; position: relative; }
+    .counter-item {
+        text-align: center; opacity: 0; transform: translateY(30px);
+        transition: all 0.6s ease;
+    }
+    .counter-item.visible { opacity: 1; transform: translateY(0); }
+    .counter-num { font-size: 3rem; font-weight: 800; color: #d4a843; text-shadow: 0 0 20px rgba(212,168,67,0.3); }
+    .counter-label { font-size: 0.9rem; opacity: 0.8; }
+
+    @media (max-width: 768px) {
+        .hero-how h1 { font-size: 2rem; }
+        .step-icon-ring { width: 70px; height: 70px; font-size: 2rem; }
+        .step-title { font-size: 1.4rem; }
+        .step-desc { font-size: 1rem; }
+        .counter-row { gap: 30px; }
+        .counter-num { font-size: 2rem; }
+        .progress-sticky .step-line-conn { width: 10px; }
+        .progress-sticky .step-dot { width: 28px; height: 28px; font-size: 0.7rem; }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+
+<!-- HERO WITH LIGHT EFFECTS -->
+<section class="hero-how">
+    <div class="particles">
+        <div class="particle" style="left:10%;width:4px;height:4px;background:#00b464;animation-duration:8s;animation-delay:0s;"></div>
+        <div class="particle" style="left:20%;width:3px;height:3px;background:#d4a843;animation-duration:12s;animation-delay:1s;"></div>
+        <div class="particle" style="left:35%;width:5px;height:5px;background:#00b464;animation-duration:10s;animation-delay:2s;"></div>
+        <div class="particle" style="left:50%;width:3px;height:3px;background:#fff;animation-duration:9s;animation-delay:0.5s;"></div>
+        <div class="particle" style="left:65%;width:4px;height:4px;background:#d4a843;animation-duration:11s;animation-delay:3s;"></div>
+        <div class="particle" style="left:80%;width:5px;height:5px;background:#00b464;animation-duration:8s;animation-delay:1.5s;"></div>
+        <div class="particle" style="left:90%;width:3px;height:3px;background:#fff;animation-duration:13s;animation-delay:0.8s;"></div>
+        <div class="particle" style="left:45%;width:6px;height:6px;background:rgba(0,180,100,0.5);animation-duration:14s;animation-delay:4s;"></div>
+        <div class="particle" style="left:75%;width:4px;height:4px;background:rgba(212,168,67,0.5);animation-duration:10s;animation-delay:2.5s;"></div>
+        <div class="particle" style="left:15%;width:5px;height:5px;background:rgba(255,255,255,0.3);animation-duration:12s;animation-delay:3.5s;"></div>
+    </div>
+
+    <div class="light-beam" style="left: 15%; bottom: 0; animation-delay: 0s;"></div>
+    <div class="light-beam" style="left: 35%; bottom: 0; animation-delay: 1.5s;"></div>
+    <div class="light-beam" style="left: 65%; bottom: 0; animation-delay: 0.8s;"></div>
+    <div class="light-beam" style="left: 85%; bottom: 0; animation-delay: 2.2s;"></div>
+
+    <div class="container position-relative">
+        <div class="hero-badge">Guide interactif</div>
+        <h1 class="fw-bold mb-3">Comment utiliser <span style="color:#00b464;">TSI</span> ?</h1>
+        <p class="lead mb-4">
+            Vous n'avez jamais investi ? Aucun probleme !<br>
+            Ce guide va tout vous expliquer, comme si on etait la avec vous.
+        </p>
+        <a href="#step-1" class="scroll-arrow">
+            <i class="bi bi-chevron-double-down"></i>
+        </a>
+
+        <div class="counter-row">
+            <div class="counter-item" data-counter>
+                <div class="counter-num" data-target="8">0</div>
+                <div class="counter-label">Etapes simples</div>
+            </div>
+            <div class="counter-item" data-counter>
+                <div class="counter-num" data-target="1">0</div>
+                <div class="counter-label">Minute pour commencer</div>
+            </div>
+            <div class="counter-item" data-counter>
+                <div class="counter-num" data-target="50">0</div>
+                <div class="counter-label">Francs CFA minimum</div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- PROGRESS BAR -->
+<div class="progress-sticky" id="progressBar">
+    <div class="container d-flex align-items-center justify-content-center flex-wrap gap-1">
+        <span class="step-dot active" data-pdot="1">1</span>
+        <span class="step-line-conn"></span>
+        <span class="step-dot" data-pdot="2">2</span>
+        <span class="step-line-conn"></span>
+        <span class="step-dot" data-pdot="3">3</span>
+        <span class="step-line-conn"></span>
+        <span class="step-dot" data-pdot="4">4</span>
+        <span class="step-line-conn"></span>
+        <span class="step-dot" data-pdot="5">5</span>
+        <span class="step-line-conn"></span>
+        <span class="step-dot" data-pdot="6">6</span>
+        <span class="step-line-conn"></span>
+        <span class="step-dot" data-pdot="7">7</span>
+        <span class="step-line-conn"></span>
+        <span class="step-dot" data-pdot="8">8</span>
+        <span class="step-line-conn"></span>
+        <span class="step-dot" data-pdot="9" style="background:#e74c3c;color:#fff;">9</span>
+    </div>
+</div>
+
+<!-- STEP 1 -->
+<section class="step-section" id="step-1">
+    <div class="container"><div class="row justify-content-center"><div class="col-lg-10">
+        <div class="step-card" data-step data-stepnum="1">
+            <div class="d-flex align-items-start gap-4 flex-wrap">
+                <div class="step-icon-ring" style="background:linear-gradient(135deg,#00b464,#009951);color:#fff;border-color:#00b464;">
+                    <i class="bi bi-person-plus-fill"></i>
+                </div>
+                <div class="flex-grow-1">
+                    <span class="step-label" style="background:rgba(0,180,100,0.12);color:#00b464;">Etape 1</span>
+                    <h2 class="step-title">Creez votre compte gratuit</h2>
+                    <p class="step-desc">Sur la page d'accueil, cliquez sur <strong>"Inscription"</strong> en haut a droite. Remplissez votre prenom, nom, email, telephone et choisissez un mot de passe. C'est tout, votre compte est pret !</p>
+                    <div class="step-tip"><i class="bi bi-lightbulb-fill text-gold me-2"></i><strong>Astuce :</strong> Utilisez un email que vous consultez souvent. C'est la que vous recevrez vos confirmations.</div>
+                </div>
+            </div>
+        </div>
+    </div></div></div>
+</section>
+
+<!-- STEP 2 -->
+<section class="step-section" id="step-2">
+    <div class="container"><div class="row justify-content-center"><div class="col-lg-10">
+        <div class="step-card" data-step data-stepnum="2">
+            <div class="d-flex align-items-start gap-4 flex-wrap">
+                <div class="step-icon-ring" style="background:linear-gradient(135deg,#1a73e8,#1557b0);color:#fff;border-color:#1a73e8;">
+                    <i class="bi bi-box-arrow-in-right"></i>
+                </div>
+                <div class="flex-grow-1">
+                    <span class="step-label" style="background:rgba(26,115,232,0.12);color:#1a73e8;">Etape 2</span>
+                    <h2 class="step-title">Connectez-vous</h2>
+                    <p class="step-desc">Allez sur <strong>"Connexion"</strong>, entrez votre email et mot de passe. En un clic, vous arrivez sur votre tableau de bord personnel. Tout est regroupe au meme endroit.</p>
+                    <div class="step-tip"><i class="bi bi-shield-lock-fill text-gold me-2"></i><strong>Securite :</strong> Vos donnees sont protegees. Votre mot de passe est chiffre et jamais stocke en clair.</div>
+                </div>
+            </div>
+        </div>
+    </div></div></div>
+</section>
+
+<!-- STEP 3 -->
+<section class="step-section" id="step-3">
+    <div class="container"><div class="row justify-content-center"><div class="col-lg-10">
+        <div class="step-card" data-step data-stepnum="3">
+            <div class="d-flex align-items-start gap-4 flex-wrap">
+                <div class="step-icon-ring" style="background:linear-gradient(135deg,#d4a843,#b8922e);color:#fff;border-color:#d4a843;">
+                    <i class="bi bi-search"></i>
+                </div>
+                <div class="flex-grow-1">
+                    <span class="step-label" style="background:rgba(212,168,67,0.12);color:#b8922e;">Etape 3</span>
+                    <h2 class="step-title">Decouvrez les ARF disponibles</h2>
+                    <p class="step-desc">Cliquez sur <strong>"ARF"</strong> dans le menu. Vous voyez la liste de tous les fonds d'investissement. Filtrez par <strong>secteur</strong>, par <strong>pays</strong> ou par <strong>niveau de risque</strong>.</p>
+                    <div class="step-tip"><i class="bi bi-funnel-fill text-gold me-2"></i><strong>Astuce :</strong> Utilisez les filtres pour trouver l'ARF qui correspond a votre budget.</div>
+                </div>
+            </div>
+        </div>
+    </div></div></div>
+</section>
+
+<!-- STEP 4 -->
+<section class="step-section" id="step-4">
+    <div class="container"><div class="row justify-content-center"><div class="col-lg-10">
+        <div class="step-card" data-step data-stepnum="4">
+            <div class="d-flex align-items-start gap-4 flex-wrap">
+                <div class="step-icon-ring" style="background:linear-gradient(135deg,#7c3aed,#5b21b6);color:#fff;border-color:#7c3aed;">
+                    <i class="bi bi-graph-up-arrow"></i>
+                </div>
+                <div class="flex-grow-1">
+                    <span class="step-label" style="background:rgba(124,58,237,0.12);color:#7c3aed;">Etape 4</span>
+                    <h2 class="step-title">Analysez un ARF en detail</h2>
+                    <p class="step-desc">Cliquez sur un ARF pour voir <strong>tous les details</strong> : description, valeur, prix par tikec, rendement et risque. Utilisez le <strong>simulateur</strong> pour estimer vos gains.</p>
+                    <div class="step-tip"><i class="bi bi-calculator-fill text-gold me-2"></i><strong>Simulateur :</strong> Entrez la somme que vous voulez investir et voyez combien vous gagnerez. C'est gratuit !</div>
+                </div>
+            </div>
+        </div>
+    </div></div></div>
+</section>
+
+<!-- STEP 5 -->
+<section class="step-section" id="step-5">
+    <div class="container"><div class="row justify-content-center"><div class="col-lg-10">
+        <div class="step-card" data-step data-stepnum="5">
+            <div class="d-flex align-items-start gap-4 flex-wrap">
+                <div class="step-icon-ring" style="background:linear-gradient(135deg,#059669,#047857);color:#fff;border-color:#059669;">
+                    <i class="bi bi-cart-check-fill"></i>
+                </div>
+                <div class="flex-grow-1">
+                    <span class="step-label" style="background:rgba(5,150,105,0.12);color:#059669;">Etape 5</span>
+                    <h2 class="step-title">Choisissez votre investissement</h2>
+                    <p class="step-desc">Entrez le <strong>nombre de tikecs</strong> que vous voulez acheter. Le montant total s'affiche automatiquement. Choisissez <strong>Orange Money</strong> ou <strong>MTN MoMo</strong>.</p>
+                    <div class="step-tip"><i class="bi bi-wallet2 text-gold me-2"></i><strong>Petit budget ?</strong> Commencez avec 1 seul tikec. Chaque investissement compte !</div>
+                </div>
+            </div>
+        </div>
+    </div></div></div>
+</section>
+
+<!-- STEP 6 -->
+<section class="step-section" id="step-6">
+    <div class="container"><div class="row justify-content-center"><div class="col-lg-10">
+        <div class="step-card" data-step data-stepnum="6">
+            <div class="d-flex align-items-start gap-4 flex-wrap">
+                <div class="step-icon-ring" style="background:linear-gradient(135deg,#f59e0b,#d97706);color:#fff;border-color:#f59e0b;">
+                    <i class="bi bi-phone-fill"></i>
+                </div>
+                <div class="flex-grow-1">
+                    <span class="step-label" style="background:rgba(245,158,11,0.12);color:#d97706;">Etape 6</span>
+                    <h2 class="step-title">Payez avec votre telephone</h2>
+                    <p class="step-desc">Entrez votre <strong>numero de telephone</strong> et confirmez le paiement sur votre appareil. Pas de carte bancaire necessaire. C'est <strong>securise et instantane</strong>.</p>
+                    <div class="step-tip"><i class="bi bi-check-circle-fill text-gold me-2"></i><strong>Confirme :</strong> Le paiement est valide en quelques secondes.</div>
+                </div>
+            </div>
+        </div>
+    </div></div></div>
+</section>
+
+<!-- STEP 7 -->
+<section class="step-section" id="step-7">
+    <div class="container"><div class="row justify-content-center"><div class="col-lg-10">
+        <div class="step-card" data-step data-stepnum="7">
+            <div class="d-flex align-items-start gap-4 flex-wrap">
+                <div class="step-icon-ring" style="background:linear-gradient(135deg,#0ea5e9,#0284c7);color:#fff;border-color:#0ea5e9;">
+                    <i class="bi bi-wallet-fill"></i>
+                </div>
+                <div class="flex-grow-1">
+                    <span class="step-label" style="background:rgba(14,165,233,0.12);color:#0284c7;">Etape 7</span>
+                    <h2 class="step-title">Suivez votre portefeuille</h2>
+                    <p class="step-desc">Dans <strong>"Mon espace"</strong>, vous voyez tous vos investissements en un coup d'oeil : tikecs, valeur actuelle, rendement, et historique des transactions.</p>
+                    <div class="step-tip"><i class="bi bi-phone text-gold me-2"></i><strong>24h/24 :</strong> Consultez votre portefeuille a tout moment.</div>
+                </div>
+            </div>
+        </div>
+    </div></div></div>
+</section>
+
+<!-- STEP 8 -->
+<section class="step-section" id="step-8">
+    <div class="container"><div class="row justify-content-center"><div class="col-lg-10">
+        <div class="step-card" data-step data-stepnum="8">
+            <div class="d-flex align-items-start gap-4 flex-wrap">
+                <div class="step-icon-ring" style="background:linear-gradient(135deg,#ec4899,#db2777);color:#fff;border-color:#ec4899;">
+                    <i class="bi bi-trophy-fill"></i>
+                </div>
+                <div class="flex-grow-1">
+                    <span class="step-label" style="background:rgba(236,72,153,0.12);color:#db2777;">Etape 8</span>
+                    <h2 class="step-title">C'est tout ! Felicitations !</h2>
+                    <p class="step-desc">Vous avez investi dans l'economie reelle. Vos tikecs sont des actifs que vous pouvez suivre et faire fructifier. <strong>Merci de faire partie du changement !</strong></p>
+                    <div class="step-tip"><i class="bi bi-heart-fill text-gold me-2"></i><strong>Impact :</strong> Chaque tikec finance des projets concrets : ecoles, hopitaux, routes, energie solaire...</div>
+                </div>
+            </div>
+        </div>
+    </div></div></div>
+</section>
+
+<!-- GLOW DIVIDER -->
+<div class="py-3"><div class="section-divider-glow"></div></div>
+
+<!-- STEP 9 - REUNIONS -->
+<section class="meeting-section" id="step-9">
+    <div class="container position-relative">
+        <div class="text-center mb-5">
+            <span class="step-label" style="background:rgba(231,76,60,0.2);color:#e74c3c;">Bonus</span>
+            <h2 class="fw-bold mb-3" style="font-size:2.5rem;">
+                <i class="bi bi-camera-video-fill me-2"></i>Lancez une reunion en direct
+            </h2>
+            <p class="lead opacity-80 mx-auto" style="max-width:700px;">
+                TSI ne se limite pas a l'investissement. Vous pouvez <strong>creer des reunions en ligne</strong>
+                pour discuter, partager et collaborer avec la communaute.
+            </p>
+        </div>
+
+        <div class="row g-4 justify-content-center">
+            <div class="col-md-4">
+                <div class="card h-100 border-0 shadow-lg" style="background:rgba(255,255,255,0.05);backdrop-filter:blur(10px);">
+                    <div class="card-body text-center p-4">
+                        <div class="step-icon-ring mx-auto mb-3" style="background:linear-gradient(135deg,#28a745,#1e7e34);color:#fff;border-color:#28a745;width:70px;height:70px;font-size:2rem;">
+                            <i class="bi bi-plus-circle-fill"></i>
+                        </div>
+                        <h5 class="fw-bold text-white">1. Cliquez sur "Demarrer"</h5>
+                        <p class="text-white-50 mb-0">Allez dans <strong>Espace Reseau</strong> puis <strong>Reunions</strong> et cliquez sur "Demarrer une reunion". Donnez un titre a votre reunion.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card h-100 border-0 shadow-lg" style="background:rgba(255,255,255,0.05);backdrop-filter:blur(10px);">
+                    <div class="card-body text-center p-4">
+                        <div class="step-icon-ring mx-auto mb-3" style="background:linear-gradient(135deg,#1a73e8,#1557b0);color:#fff;border-color:#1a73e8;width:70px;height:70px;font-size:2rem;">
+                            <i class="bi bi-link-45deg"></i>
+                        </div>
+                        <h5 class="fw-bold text-white">2. Un lien unique est genere</h5>
+                        <p class="text-white-50 mb-0">La plateforme cree automatiquement un <strong>lien unique</strong> pour votre reunion. Les autres membres peuvent la voir dans leur dashboard.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card h-100 border-0 shadow-lg" style="background:rgba(255,255,255,0.05);backdrop-filter:blur(10px);">
+                    <div class="card-body text-center p-4">
+                        <div class="step-icon-ring mx-auto mb-3" style="background:linear-gradient(135deg,#e74c3c,#c0392b);color:#fff;border-color:#e74c3c;width:70px;height:70px;font-size:2rem;">
+                            <i class="bi bi-broadcast"></i>
+                        </div>
+                        <h5 class="fw-bold text-white">3. C'est en direct !</h5>
+                        <p class="text-white-50 mb-0">Video, audio, chat, partage d'ecran. Vous etes le <strong>maitre de la reunion</strong> : vous pouvez muter ou expulser des participants.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="text-center mt-5">
+            <div class="d-flex gap-3 justify-content-center flex-wrap">
+                {% if current_user.is_authenticated %}
+                <a href="{{ url_for('reseau.meetings_create') }}" class="btn btn-danger btn-lg fw-bold" style="box-shadow:0 0 30px rgba(231,76,60,0.4);">
+                    <i class="bi bi-camera-video-fill me-2"></i>Demarrer une reunion maintenant
+                </a>
+                <a href="{{ url_for('reseau.meetings_list') }}" class="btn btn-outline-light btn-lg">
+                    <i class="bi bi-list-ul me-2"></i>Voir les reunions en cours
+                </a>
+                {% else %}
+                <a href="{{ url_for('auth.register') }}" class="btn btn-gold btn-lg fw-bold">
+                    <i class="bi bi-person-plus me-2"></i>Creer mon compte pour lancer une reunion
+                </a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- FINAL CTA -->
+<section class="final-cta">
+    <div class="container">
+        <h2 class="fw-bold mb-3">Pret a commencer ?</h2>
+        <p class="lead mb-5 opacity-90 position-relative">Creez votre compte en moins d'une minute et commencez a investir.</p>
+        <a href="{{ url_for('auth.register') }}" class="btn btn-gold btn-lg me-3">
+            <i class="bi bi-person-plus me-2"></i>Creer mon compte
+        </a>
+        <a href="{{ url_for('arf.index') }}" class="btn btn-outline-light btn-lg">
+            <i class="bi bi-coin me-2"></i>Voir les ARF
+        </a>
+    </div>
+</section>
+
+<!-- FLOATING CTA -->
+<a href="{{ url_for('auth.register') }}" class="cta-float" title="Creer mon compte">
+    <i class="bi bi-arrow-right"></i>
+</a>
+
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const steps = document.querySelectorAll('[data-step]');
+    const dots = document.querySelectorAll('[data-pdot]');
+    const counters = document.querySelectorAll('[data-counter]');
+    let currentStep = 1;
+
+    // STEP REVEAL
+    const stepObserver = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('visible');
+                stepObserver.unobserve(entry.target);
+            }
+        });
+    }, { threshold: 0.15, rootMargin: '0px 0px -80px 0px' });
+    steps.forEach(el => stepObserver.observe(el));
+
+    // PROGRESS DOTS
+    const dotObserver = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+                const num = parseInt(entry.target.dataset.stepnum);
+                currentStep = Math.max(currentStep, num);
+                dots.forEach(d => {
+                    const n = parseInt(d.dataset.pdot);
+                    d.classList.remove('active', 'done');
+                    if (n < currentStep) d.classList.add('done');
+                    else if (n === currentStep) d.classList.add('active');
+                });
+            }
+        });
+    }, { threshold: 0.5 });
+    steps.forEach(el => dotObserver.observe(el));
+
+    // COUNTER ANIMATION
+    const counterObserver = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('visible');
+                const el = entry.target.querySelector('[data-target]');
+                if (el && !el.dataset.animated) {
+                    el.dataset.animated = '1';
+                    const target = parseInt(el.dataset.target);
+                    let current = 0;
+                    const step = Math.max(1, Math.floor(target / 30));
+                    const timer = setInterval(() => {
+                        current += step;
+                        if (current >= target) { current = target; clearInterval(timer); }
+                        el.textContent = current;
+                    }, 40);
+                }
+                counterObserver.unobserve(entry.target);
+            }
+        });
+    }, { threshold: 0.5 });
+    counters.forEach(el => counterObserver.observe(el));
+
+    // SMOOTH SCROLL
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function(e) {
+            e.preventDefault();
+            const target = document.querySelector(this.getAttribute('href'));
+            if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        });
+    });
+
+    // MOUSE GLOW EFFECT on hero
+    const hero = document.querySelector('.hero-how');
+    if (hero) {
+        hero.addEventListener('mousemove', function(e) {
+            const rect = hero.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+            hero.style.background = `radial-gradient(circle at ${x}px ${y}px, rgba(0,180,100,0.08) 0%, transparent 50%), linear-gradient(135deg, #0a0a1a 0%, #0d1b2a 30%, #1b2838 60%, #0a192f 100%)`;
+        });
+        hero.addEventListener('mouseleave', function() {
+            hero.style.background = 'linear-gradient(135deg, #0a0a1a 0%, #0d1b2a 30%, #1b2838 60%, #0a192f 100%)';
+        });
+    }
+});
+</script>
+{% endblock %}

@@ -1,0 +1,129 @@
+{% extends "base.html" %}
+
+{% block title %}Mon espace - TSI{% endblock %}
+
+{% block content %}
+<div class="container py-5 mt-5">
+    <div class="row">
+        <div class="col-lg-3">
+            <div class="card shadow-sm mb-4">
+                <div class="card-body text-center">
+                    <i class="bi bi-person-circle text-primary" style="font-size: 4rem;"></i>
+                    <h5 class="fw-bold mt-3">{{ current_user.full_name }}</h5>
+                    <p class="text-muted">{{ current_user.email }}</p>
+                    <span class="badge bg-primary">Membre</span>
+                </div>
+            </div>
+            <div class="list-group mb-4">
+                <a href="{{ url_for('member.dashboard') }}" class="list-group-item list-group-item-action active">
+                    <i class="bi bi-speedometer2 me-2"></i>Tableau de bord
+                </a>
+                <a href="{{ url_for('member.portfolio') }}" class="list-group-item list-group-item-action">
+                    <i class="bi bi-wallet2 me-2"></i>Mon portefeuille
+                </a>
+                <a href="{{ url_for('member.transactions') }}" class="list-group-item list-group-item-action">
+                    <i class="bi bi-receipt me-2"></i>Mes transactions
+                </a>
+                <a href="{{ url_for('arf.index') }}" class="list-group-item list-group-item-action">
+                    <i class="bi bi-coin me-2"></i>Investir en ARF
+                </a>
+                <a href="{{ url_for('marketplace.index') }}" class="list-group-item list-group-item-action">
+                    <i class="bi bi-shop me-2"></i>Marketplace
+                </a>
+                <a href="{{ url_for('payment.history') }}" class="list-group-item list-group-item-action">
+                    <i class="bi bi-credit-card me-2"></i>Paiements
+                </a>
+            </div>
+            <h6 class="text-muted text-uppercase fw-bold mb-2 px-2" style="font-size: 0.7rem; letter-spacing: 1px;">
+                <i class="bi bi-people-fill me-1"></i>RESEAU
+            </h6>
+            <div class="list-group mb-4">
+                <a href="{{ url_for('reseau.index') }}" class="list-group-item list-group-item-action">
+                    <i class="bi bi-people me-2"></i>Espace Reseau
+                </a>
+                <a href="{{ url_for('reseau.meetings_list') }}" class="list-group-item list-group-item-action">
+                    <i class="bi bi-camera-video me-2"></i>Reunions en ligne
+                </a>
+                <a href="{{ url_for('reseau.articles_my') }}" class="list-group-item list-group-item-action">
+                    <i class="bi bi-journal-text me-2"></i>Mes articles
+                </a>
+            </div>
+        </div>
+
+        <div class="col-lg-9">
+            <h1 class="fw-bold mb-4">Tableau de bord</h1>
+
+            <div class="row mb-4">
+                <div class="col-md-4 mb-3">
+                    <div class="card stat-card shadow-sm">
+                        <div class="card-body">
+                            <p class="text-muted mb-1">Mes investissements</p>
+                            <p class="stat-number mb-0">{{ "{:,.0f}".format(total_invested) }} €</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-3">
+                    <div class="card stat-card shadow-sm">
+                        <div class="card-body">
+                            <p class="text-muted mb-1">Tikecs détenus</p>
+                            <p class="stat-number mb-0">{{ total_units }}</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-3">
+                    <div class="card stat-card shadow-sm">
+                        <div class="card-body">
+                            <p class="text-muted mb-1">Souscriptions</p>
+                            <p class="stat-number mb-0">{{ subscriptions|length }}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card shadow-sm">
+                <div class="card-header bg-white d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0 fw-semibold">Dernières souscriptions</h5>
+                    <a href="{{ url_for('member.transactions') }}" class="btn btn-outline-primary btn-sm">Voir tout</a>
+                </div>
+                <div class="card-body p-0">
+                    {% if subscriptions %}
+                    <div class="table-responsive">
+                        <table class="table table-hover mb-0">
+                            <thead>
+                                <tr>
+                                    <th>ARF</th>
+                                    <th>Tikecs</th>
+                                    <th>Montant</th>
+                                    <th>Paiement</th>
+                                    <th>Statut</th>
+                                    <th>Date</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for sub in subscriptions[:5] %}
+                                <tr>
+                                    <td class="fw-semibold">{{ sub.arf.name }}</td>
+                                    <td>{{ sub.units }}</td>
+                                    <td>{{ "{:,.2f}".format(sub.amount) }} €</td>
+                                    <td>{{ sub.payment_method_label }}</td>
+                                    <td><span class="badge bg-{{ sub.status_color }}">{{ sub.status_label }}</span></td>
+                                    <td>{{ sub.created_at.strftime('%d/%m/%Y') }}</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    {% else %}
+                    <div class="text-center py-4">
+                        <p class="text-muted">Aucune souscription pour le moment.</p>
+                        <a href="{{ url_for('arf.index') }}" class="btn btn-primary">
+                            <i class="bi bi-coin me-1"></i>Découvrir les ARF
+                        </a>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

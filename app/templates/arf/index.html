@@ -1,0 +1,141 @@
+{% extends "base.html" %}
+
+{% block title %}Portefeuille ARF - TSI{% endblock %}
+
+{% block content %}
+<div class="container py-5 mt-5">
+    <div class="text-center mb-5">
+        <h1 class="fw-bold">Portefeuille ARF</h1>
+        <p class="text-muted lead">Actualised Risk Funds - Investissez dans l'économie réelle</p>
+    </div>
+
+    <div class="card shadow-sm mb-4">
+        <div class="card-body">
+            <form method="GET" class="row g-3">
+                <div class="col-md-3">
+                    <select name="sector" class="form-select">
+                        <option value="">Tous les secteurs</option>
+                        <option value="agro-industrie" {% if sector == 'agro-industrie' %}selected{% endif %}>Agro-industrie</option>
+                        <option value="mines" {% if sector == 'mines' %}selected{% endif %}>Mines</option>
+                        <option value="energie" {% if sector == 'energie' %}selected{% endif %}>Énergie</option>
+                        <option value="numérique" {% if sector == 'numérique' %}selected{% endif %}>Numérique</option>
+                        <option value="infrastructure" {% if sector == 'infrastructure' %}selected{% endif %}>Infrastructure</option>
+                        <option value="santé" {% if sector == 'santé' %}selected{% endif %}>Santé</option>
+                        <option value="education" {% if sector == 'education' %}selected{% endif %}>Éducation</option>
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <select name="risk" class="form-select">
+                        <option value="">Tous les risques</option>
+                        <option value="low" {% if risk == 'low' %}selected{% endif %}>Faible</option>
+                        <option value="medium" {% if risk == 'medium' %}selected{% endif %}>Moyen</option>
+                        <option value="high" {% if risk == 'high' %}selected{% endif %}>Élevé</option>
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <select name="country" class="form-select">
+                        <option value="">Tous les pays</option>
+                        {% for c in countries %}
+                        <option value="{{ c }}" {% if country == c %}selected{% endif %}>{{ c }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <button type="submit" class="btn btn-primary w-100">
+                        <i class="bi bi-funnel me-1"></i>Filtrer
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="row g-4">
+        {% for arf in arfs.items %}
+        <div class="col-md-6 col-lg-4">
+            <div class="card h-100 shadow-sm">
+                <div class="card-header bg-white d-flex justify-content-between align-items-center">
+                    <span class="badge bg-{{ arf.risk_color }}">{{ arf.risk_label }}</span>
+                    <span class="text-muted small">{{ arf.sector }}</span>
+                </div>
+                <div class="card-body">
+                    <h5 class="card-title fw-bold">{{ arf.name }}</h5>
+                    <p class="card-text text-muted small">{{ arf.description[:120] }}{% if arf.description|length > 120 %}...{% endif %}</p>
+
+                    <div class="row text-center mb-3">
+                        <div class="col-4">
+                            <p class="text-muted small mb-0">Valeur</p>
+                            <p class="fw-bold mb-0 text-primary">{{ "{:,.0f}".format(arf.total_value) }} €</p>
+                        </div>
+                        <div class="col-4">
+                            <p class="text-muted small mb-0">Prix/tikec</p>
+                            <p class="fw-bold mb-0 text-gold">{{ "{:,.2f}".format(arf.unit_price) }} €</p>
+                        </div>
+                        <div class="col-4">
+                            <p class="text-muted small mb-0">Rendement</p>
+                            <p class="fw-bold mb-0 text-success">{{ arf.expected_return }}%</p>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <div class="d-flex justify-content-between small text-muted mb-1">
+                            <span>{{ arf.units_sold }} / {{ arf.total_units }} tikecs vendus</span>
+                            <span>{{ arf.sold_percentage }}%</span>
+                        </div>
+                        <div class="progress" style="height: 6px;">
+                            <div class="progress-bar bg-primary" style="width: {{ arf.sold_percentage }}%"></div>
+                        </div>
+                    </div>
+
+                    <p class="small text-muted mb-0">
+                        <i class="bi bi-geo-alt me-1"></i>{{ arf.country }}
+                    </p>
+                </div>
+                <div class="card-footer bg-white border-0 pt-0">
+                    <a href="{{ url_for('arf.detail', arf_id=arf.id) }}" class="btn btn-primary w-100">
+                        <i class="bi bi-info-circle me-1"></i>Voir les détails
+                    </a>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+
+        {% if not arfs.items %}
+        <div class="col-12">
+            <div class="card shadow-sm">
+                <div class="card-body text-center py-5">
+                    <i class="bi bi-coin text-muted" style="font-size: 4rem;"></i>
+                    <h4 class="mt-3">Aucun ARF disponible</h4>
+                    <p class="text-muted">Aucun actif ne correspond à vos critères de recherche.</p>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+
+    {% if arfs.pages > 1 %}
+    <nav class="mt-4">
+        <ul class="pagination justify-content-center">
+            {% if arfs.has_prev %}
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ arfs.prev_num }}&sector={{ sector }}&risk={{ risk }}&country={{ country }}">Précédent</a>
+                </li>
+            {% endif %}
+            {% for page_num in arfs.iter_pages() %}
+                {% if page_num %}
+                    <li class="page-item {% if page_num == arfs.page %}active{% endif %}">
+                        <a class="page-link" href="?page={{ page_num }}&sector={{ sector }}&risk={{ risk }}&country={{ country }}">{{ page_num }}</a>
+                    </li>
+                {% else %}
+                    <li class="page-item disabled"><span class="page-link">...</span></li>
+                {% endif %}
+            {% endfor %}
+            {% if arfs.has_next %}
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ arfs.next_num }}&sector={{ sector }}&risk={{ risk }}&country={{ country }}">Suivant</a>
+                </li>
+            {% endif %}
+        </ul>
+    </nav>
+    {% endif %}
+</div>
+{% endblock %}

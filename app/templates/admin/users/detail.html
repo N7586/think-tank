@@ -1,0 +1,153 @@
+{% extends "base.html" %}
+
+{% block title %}Détail utilisateur - Admin TSI{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-5 mt-4">
+    <div class="row">
+        <div class="col-lg-2 bg-dark min-vh-100 position-fixed d-none d-lg-block" style="padding-top: 80px;">
+            <nav class="nav flex-column p-3">
+                <a class="nav-link text-light" href="{{ url_for('admin.dashboard') }}">
+                    <i class="bi bi-speedometer2 me-2"></i>Dashboard
+                </a>
+                <a class="nav-link text-light active" href="{{ url_for('admin.users_list') }}">
+                    <i class="bi bi-people me-2"></i>Utilisateurs
+                </a>
+                <a class="nav-link text-light" href="{{ url_for('blog.index') }}">
+                    <i class="bi bi-journal-text me-2"></i>Blog
+                </a>
+                <a class="nav-link text-light" href="{{ url_for('arf.index') }}">
+                    <i class="bi bi-coin me-2"></i>ARF
+                </a>
+                <a class="nav-link text-light" href="{{ url_for('marketplace.index') }}">
+                    <i class="bi bi-shop me-2"></i>Marketplace
+                </a>
+                <hr class="border-secondary">
+                <a class="nav-link text-light" href="{{ url_for('main.home') }}">
+                    <i class="bi bi-house me-2"></i>Retour au site
+                </a>
+            </nav>
+        </div>
+
+        <div class="col-lg-10 offset-lg-2">
+            <div class="p-4">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <div>
+                        <a href="{{ url_for('admin.users_list') }}" class="text-decoration-none text-muted">
+                            <i class="bi bi-arrow-left me-1"></i>Retour à la liste
+                        </a>
+                        <h1 class="fw-bold mt-2">{{ user.full_name }}</h1>
+                    </div>
+                    <div class="d-flex gap-2">
+                        <a href="{{ url_for('admin.edit_user', user_id=user.id) }}" class="btn btn-outline-primary">
+                            <i class="bi bi-pencil me-1"></i>Modifier
+                        </a>
+                        {% if user.id != current_user.id %}
+                            <form method="POST" action="{{ url_for('admin.toggle_user_status', user_id=user.id) }}" class="d-inline">
+                                {% if user.is_active %}
+                                    <button type="submit" class="btn btn-outline-warning">
+                                        <i class="bi bi-lock me-1"></i>Bloquer
+                                    </button>
+                                {% else %}
+                                    <button type="submit" class="btn btn-outline-success">
+                                        <i class="bi bi-unlock me-1"></i>Débloquer
+                                    </button>
+                                {% endif %}
+                            </form>
+                            <form method="POST" action="{{ url_for('admin.delete_user', user_id=user.id) }}" class="d-inline"
+                                  onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cet utilisateur ?')">
+                                <button type="submit" class="btn btn-outline-danger">
+                                    <i class="bi bi-trash me-1"></i>Supprimer
+                                </button>
+                            </form>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-8">
+                        <div class="card shadow-sm">
+                            <div class="card-header bg-white">
+                                <h5 class="mb-0 fw-semibold">Informations personnelles</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="row mb-3">
+                                    <div class="col-md-6">
+                                        <label class="text-muted small">Prénom</label>
+                                        <p class="fw-semibold mb-0">{{ user.first_name }}</p>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="text-muted small">Nom</label>
+                                        <p class="fw-semibold mb-0">{{ user.last_name }}</p>
+                                    </div>
+                                </div>
+                                <div class="row mb-3">
+                                    <div class="col-md-6">
+                                        <label class="text-muted small">Email</label>
+                                        <p class="fw-semibold mb-0">{{ user.email }}</p>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="text-muted small">Téléphone</label>
+                                        <p class="fw-semibold mb-0">{{ user.phone or 'Non renseigné' }}</p>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <label class="text-muted small">Langue préférée</label>
+                                        <p class="fw-semibold mb-0">{{ 'Français' if user.language == 'fr' else 'English' }}</p>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="text-muted small">Rôle</label>
+                                        <p class="mb-0">
+                                            <span class="badge bg-{{ 'warning' if user.is_admin else 'primary' }}">
+                                                {{ 'Administrateur' if user.is_admin else 'Utilisateur' }}
+                                            </span>
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-4">
+                        <div class="card shadow-sm mb-4">
+                            <div class="card-header bg-white">
+                                <h5 class="mb-0 fw-semibold">Statut du compte</h5>
+                            </div>
+                            <div class="card-body text-center">
+                                {% if user.is_active %}
+                                    <span class="badge badge-active fs-6 mb-3">Compte actif</span>
+                                {% else %}
+                                    <span class="badge badge-blocked fs-6 mb-3">Compte bloqué</span>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <div class="card shadow-sm">
+                            <div class="card-header bg-white">
+                                <h5 class="mb-0 fw-semibold">Activité</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="mb-3">
+                                    <label class="text-muted small">Inscrit le</label>
+                                    <p class="fw-semibold mb-0">{{ user.created_at.strftime('%d/%m/%Y à %H:%M') }}</p>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="text-muted small">Dernière connexion</label>
+                                    <p class="fw-semibold mb-0">
+                                        {{ user.last_login.strftime('%d/%m/%Y à %H:%M') if user.last_login else 'Jamais connecté' }}
+                                    </p>
+                                </div>
+                                <div>
+                                    <label class="text-muted small">ID utilisateur</label>
+                                    <p class="fw-semibold mb-0">#{{ user.id }}</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

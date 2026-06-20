@@ -1,0 +1,112 @@
+{% extends "base.html" %}
+
+{% block title %}Gestion Marketplace - Admin TSI{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-5 mt-4">
+    <div class="row">
+        <div class="col-lg-2 bg-dark min-vh-100 position-fixed d-none d-lg-block" style="padding-top: 80px;">
+            <nav class="nav flex-column p-3">
+                <a class="nav-link text-light" href="{{ url_for('admin.dashboard') }}">
+                    <i class="bi bi-speedometer2 me-2"></i>Dashboard
+                </a>
+                <a class="nav-link text-light" href="{{ url_for('admin.users_list') }}">
+                    <i class="bi bi-people me-2"></i>Utilisateurs
+                </a>
+                <a class="nav-link text-light" href="{{ url_for('arf.admin_list') }}">
+                    <i class="bi bi-coin me-2"></i>ARF
+                </a>
+                <a class="nav-link text-light active" href="{{ url_for('marketplace.admin_list') }}">
+                    <i class="bi bi-shop me-2"></i>Marketplace
+                </a>
+                <hr class="border-secondary">
+                <a class="nav-link text-light" href="{{ url_for('main.home') }}">
+                    <i class="bi bi-house me-2"></i>Retour au site
+                </a>
+            </nav>
+        </div>
+
+        <div class="col-lg-10 offset-lg-2">
+            <div class="p-4">
+                <h1 class="fw-bold mb-4">Gestion Marketplace</h1>
+
+                <div class="card shadow-sm">
+                    <div class="card-body p-0">
+                        <div class="table-responsive">
+                            <table class="table table-hover mb-0">
+                                <thead>
+                                    <tr>
+                                        <th>#</th>
+                                        <th>Titre</th>
+                                        <th>Type</th>
+                                        <th>Valeur</th>
+                                        <th>Émetteur</th>
+                                        <th>Statut</th>
+                                        <th>Date</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for offer in offers.items %}
+                                    <tr>
+                                        <td>{{ offer.id }}</td>
+                                        <td class="fw-semibold">{{ offer.title }}</td>
+                                        <td>{{ offer.contract_type }}</td>
+                                        <td>{{ "{:,.0f}".format(offer.value) }} €</td>
+                                        <td>{{ offer.publisher.full_name }}</td>
+                                        <td><span class="badge bg-{{ offer.status_color }}">{{ offer.status_label }}</span></td>
+                                        <td>{{ offer.created_at.strftime('%d/%m/%Y') }}</td>
+                                        <td>
+                                            <a href="{{ url_for('marketplace.detail', offer_id=offer.id) }}" class="btn btn-outline-primary btn-sm">
+                                                <i class="bi bi-eye"></i>
+                                            </a>
+                                            <form method="POST" action="{{ url_for('marketplace.admin_toggle_status', offer_id=offer.id) }}" class="d-inline">
+                                                <button type="submit" class="btn btn-outline-warning btn-sm">
+                                                    <i class="bi bi-arrow-left-right"></i>
+                                                </button>
+                                            </form>
+                                            <form method="POST" action="{{ url_for('marketplace.admin_delete', offer_id=offer.id) }}" class="d-inline" onsubmit="return confirm('Supprimer cette offre ?')">
+                                                <button type="submit" class="btn btn-outline-danger btn-sm">
+                                                    <i class="bi bi-trash"></i>
+                                                </button>
+                                            </form>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                    {% if not offers.items %}
+                                    <tr>
+                                        <td colspan="8" class="text-center text-muted py-4">Aucune offre.</td>
+                                    </tr>
+                                    {% endif %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                {% if offers.pages > 1 %}
+                <nav class="mt-4">
+                    <ul class="pagination justify-content-center">
+                        {% if offers.has_prev %}
+                            <li class="page-item"><a class="page-link" href="?page={{ offers.prev_num }}">Précédent</a></li>
+                        {% endif %}
+                        {% for page_num in offers.iter_pages() %}
+                            {% if page_num %}
+                                <li class="page-item {% if page_num == offers.page %}active{% endif %}">
+                                    <a class="page-link" href="?page={{ page_num }}">{{ page_num }}</a>
+                                </li>
+                            {% else %}
+                                <li class="page-item disabled"><span class="page-link">...</span></li>
+                            {% endif %}
+                        {% endfor %}
+                        {% if offers.has_next %}
+                            <li class="page-item"><a class="page-link" href="?page={{ offers.next_num }}">Suivant</a></li>
+                        {% endif %}
+                    </ul>
+                </nav>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
